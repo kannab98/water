@@ -37,7 +37,7 @@ class Surface(Spectrum):
               return b
           B=10**b(k)
           return B
-    # Перепиши ради христа эту фигню. Не читабельно
+
     def Phi(self,k,phi):
         # Функция углового распределения
         normalization = lambda B: B/np.arctan(np.sinh(2*pi*B))
@@ -69,14 +69,15 @@ class Surface(Spectrum):
 
     def model(self,r,t):
         N = self.N 
-        M = self.M 
+        M = self.M
+        self.k = self.k[:N]
         k = self.k
         phi = self.phi
         A = self.A
         F = self.F
         psi = self.psi
         self.surface = 0
-        print(A*sum(F[0]))
+        self.amplitudes = np.array([ A[i]*sum(F[i])  for i in range(N)])
         progress_bar = tqdm( total = N*M,  leave = False )
 #            progress_bar.set_description("Processing %s" % t)
         for n in range(N):
