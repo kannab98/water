@@ -8,15 +8,11 @@ from tqdm import tqdm
 
 class spectrum:
     def __init__(self, KT = [0.05, 2000], \
-                 U10 = 5, x = 20170):
+                 U10 = 5, x = 20170, spectrum_type = 'Karaev'):
         # ускорение свободного падения.
         self.g = 9.81
         # скорость ветра на высоте 10 м над уровнем моря.
         self.U10 = U10
-        # массив с границами моделируемого спектра.
-        self.KT = np.array(KT)
-        # k0 -- густая сетка, нужна для интегрирования и интерполирования
-        self.k0= np.logspace(np.log10(KT[0]), np.log10(KT[-1]), 10**4)
         # коэффициент gamma (см. спектр JONSWAP)
         self.gamma = self.Gamma(x)
         # коэффициент alpha (см. спектр JONSWAP)
@@ -25,15 +21,19 @@ class spectrum:
         self.omega_m = self.Omega(x) * self.g/self.U10
         # координата пика спектра по волновому числу
         self.k_m = self.k_max( self.omega_m )
+        # массив с границами моделируемого спектра.
+        self.KT = np.array([self.k_m/4,self.k_m*500])
+        KT = self.KT
+        # k0 -- густая сетка, нужна для интегрирования и интерполирования
+        self.k0= np.logspace(np.log10(self.KT[0]), np.log10(self.KT[-1]), 10**4)
         
         # интерполируем смоделированный спектр
         self.spectrum = self.interpolate()
         self.sigma_sqr = integrate.quad(self.spectrum, KT[0],KT[-1])[0]
-
         
     def find_decision(self,omega):
-        P = 9.8 * 1000.0/0.074;
-        Q = -1000.0*omega**2/0.074;
+        P = 9.8 * 1000.0/0.074
+        Q = -1000.0*omega**2/0.074
         x1= -Q/2.0 + np.sqrt( (Q/2)**2 + (P/3)**3)
         x2= -Q/2.0 - np.sqrt( (Q/2)**2 + (P/3)**3)
         k=x1**(1/3)-(-x2)**(1/3)
@@ -106,8 +106,9 @@ class spectrum:
         )
         return omega_tilde
 
-    def spectrum0(self,n,k):
-        power = [0,4,5,2.7,5]
+    def spectrum0(self,n,k,spectrum_type = 'Karaev'):
+        if spectrum_type == 'Karaev':
+            power = [0,4,5,2.7,5]
         if n==0:
             return self.JONSWAP(k)
         else:
@@ -303,6 +304,7 @@ class surface:
         N = len(k)
         S = self.spectrum
         integral = np.array([ integrate.quad(S,k[i-1],k[i])[0] for i in range(1,N) ])
+        print(integral)
         amplitude = np.sqrt(2 *integral )
         amplitude = np.concatenate((amplitude,[0]))
         return amplitude
@@ -442,19 +444,24 @@ class correlation:
         pass
         F = self.spectrum(k) *  k**2 * np.sin(phi) * np.cos(phi)  * self.Phi(k,phi)
         return F
-    ###################################################    
+    ################################################### 
+    #    
 class water(spectrum,correlation,surface):
     # Этот класс содержит некоторые инструменты для работы с моделью
-    def __init__(self,N=256,KT=[0.05,2000]):
+    def __init__(self,N=256, M = 256, KT=[0.05,2000]):
         self.x=np.linspace(0,200,200)
+        self.x0 = np.linspace(0,2000,10**5)
         self.y=np.linspace(0,200,200)
+        self.y0 = [0]
         self.t=np.array([0])
         self.N=N
+        self.M=M
         self.KT=np.array(KT)
         spectrum.__init__(self,KT=self.KT)
-        surface.__init__(self,N=self.N)
+        surface.__init__(self,N=self.N,M=self.M)
         self.rho=np.linspace(0,100,1000)
         self.rho0=np.linspace(0,100,self.k0.size)
+
     def plot(self,fig):
         plt.figure()
         if fig=='slopes' or fig=='s':
@@ -501,6 +508,7 @@ class water(spectrum,correlation,surface):
         plt.colorbar()
         plt.ylabel(r'Y, \text{м}',fontsize=16)
         plt.xlabel(r'X, \text{м}',fontsize=16)
+
     def plot_restore(self,fourier='real'):
         rho=self.rho
         k=self.k0
@@ -516,5 +524,4 @@ class water(spectrum,correlation,surface):
         #   savefig(path.abspath('..'+'\\water\\anim\\'+'water'+str(i)+'.png'),
         #             pdi=10**6,bbox_inches='tight')
 #        show()
-water=water()
-plt.loglog(water.k0,water.full_spectrum(water.k0))
+# plt.loglog(water.k0,water.full_spectrum(water.k0))

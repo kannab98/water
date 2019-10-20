@@ -263,3 +263,7 @@ TSWLatexianTemp*
 
 # standalone packages
 *.sta
+
+project/water/__pycache__/
+
+__pycache__/
