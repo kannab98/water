@@ -4,7 +4,7 @@ from numpy import pi
 from scipy import interpolate,integrate
 from tqdm import tqdm
 import water
-N = 20
+N = 2000
 M = 1
 
 surface = water.Surface(N=N,M=M)

@@ -1,7 +1,7 @@
 
 import numpy as np
 from scipy import interpolate, integrate
-
+from numpy import pi
 class spectrum:
     def __init__(self, U10 = 5, x = 20170,):
         # ускорение свободного падения.
