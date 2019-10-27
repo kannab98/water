@@ -1,7 +1,7 @@
 from water import *
 import os
-N=1
-water = water(N=N, M=256,)
+N=1024
+water = water(N=N, M=2,)
 surface = water.model(water.k, water.phi, water.t)
 x, y  = np.meshgrid(water.x0,water.y0)
 z = surface([x,y],water.t)

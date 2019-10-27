@@ -56,7 +56,8 @@ class Surface(Spectrum):
         # print(integral.shape)
         for i in range(N):
             for j in range(M):
-                integral[i][j] = integrate.quad( Phi, phi[j], phi[j+1], args=(k[i],) )[0]
+                # integral[i][j] = integrate.quad( Phi, phi[j], phi[j+1], args=(k[i],) )[0]
+                integral[i][j] = np.trapz( Phi( phi[j:j+2],k[i] ), phi[j:j+2])
         amplitude = np.sqrt(2 *integral )
         return amplitude
     
@@ -77,6 +78,7 @@ class Surface(Spectrum):
         F = self.F
         psi = self.psi
         self.surface = 0
+        print(0)
         self.amplitudes = np.array([ A[i]*sum(F[i])  for i in range(N)])
         progress_bar = tqdm( total = N*M,  leave = False )
 #            progress_bar.set_description("Processing %s" % t)

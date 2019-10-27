@@ -17,7 +17,7 @@ class Spectrum:
         # координата пика спектра по волновому числу
         self.k_m = self.k_max( self.omega_m )
         # массив с границами моделируемого спектра.
-        self.KT = np.array([self.k_m/4,self.k_m*500])
+        self.KT = np.array([self.k_m/4,self.k_m*1000])
         # k0 -- густая сетка, нужна для интегрирования и интерполирования
         self.k0= np.logspace(np.log10(self.KT[0]), np.log10(self.KT[-1]), 10**4)
 
