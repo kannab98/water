@@ -8,8 +8,8 @@ class Surface(Spectrum):
     def __init__(self,  N=256, M=100, space='log', random_phases = 1, **kwargs):
         Spectrum.__init__(self,**kwargs)
         self.get_spectrum()
-        self.M = M
         self.N = N 
+        self.M = M
         KT = self.KT
         self.k = np.logspace(np.log10(KT[0]), np.log10(KT[-1]),self.N + 1)
         self.phi=np.linspace(0,2*np.pi,self.M + 1)
@@ -78,7 +78,6 @@ class Surface(Spectrum):
         F = self.F
         psi = self.psi
         self.surface = 0
-        print(0)
         self.amplitudes = np.array([ A[i]*sum(F[i])  for i in range(N)])
         progress_bar = tqdm( total = N*M,  leave = False )
 #            progress_bar.set_description("Processing %s" % t)
@@ -95,3 +94,31 @@ class Surface(Spectrum):
         progress_bar.clear()
         print()
         return self.surface
+
+    def D(self,r):
+        N = self.N 
+        M = self.M
+        k = self.k
+        phi = self.phi
+        A = self.A
+        F = self.F
+        psi = self.psi
+        Dx = 0
+        Dy = 0
+        for n in range(N):
+            for m in range(M):
+                Dx += A[n]  * np.cos(phi[m]) *\
+                np.cos(
+                        +k[n]*(r[0]*np.cos(phi[m])+r[1]*np.sin(phi[m]))
+                        +psi[n][m] + np.pi/2)  \
+                        * F[n][m]
+
+                Dy += A[n]  * np.sin(phi[m]) *\
+                np.cos(
+                        +k[n]*(r[0]*np.cos(phi[m])+r[1]*np.sin(phi[m]))
+                        +psi[n][m] + np.pi/2)  \
+                        * F[n][m]
+
+
+        return np.array(Dx),np.array(Dy)
+

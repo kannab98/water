@@ -5,34 +5,24 @@ from scipy import interpolate,integrate
 from tqdm import tqdm
 import water
 N = 2000
-M = 1
+M = 100
 
-surface = water.Surface(N=N,M=M)
-x0 = np.linspace(0,200,10**5)
-y0 = 0
 t = 0
-x, y = np.meshgrid(x0, y0)
-z_real = surface.model([x,y],t)[0]
-fig,ax = plt.subplots(nrows = 1, ncols = 2)
-
-a = surface.amplitudes
-k = surface.k
-print(k,a)
-
-def fft(t,x):
-    N = x.size
-    m = 1
-    X = np.fft.rfft(x, n = m*N)
-    # 2/(surface.KT[0]*x.size)
-    freq = np.fft.rfftfreq(n= m*N, d = 1 )
-    return freq[1:],X[1:]
 
 
-ax[0].plot(x0, z_real)
-freq,S = fft(x0,z_real)
+def plot_surface(x , y, t):
+    fig,ax = plt.subplots(nrows = 1, ncols = 1)
+    surface = water.Surface(N=N,M=M)
+    x, y = np.meshgrid(x, y)
+    z = surface.model([x,y],t)
+    print(z.shape)
+    from matplotlib.cm import winter
+    plt.contourf(z,100,cmap=winter)
+    # plt.colorbar()
+    # # plt.ylabel(r'Y, \text{м}',fontsize=16)
+    # plt.xlabel(r'X, \text{м}',fontsize=16)
 
-S = 2*np.abs(S)/x0.size
-q = np.argmax(S)
-ax[1].loglog(freq,S)
-
+x0 = np.linspace(0,200,200)
+y0 = x0
+plot_surface(x0,y0,t)
 plt.show()

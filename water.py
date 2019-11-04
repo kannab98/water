@@ -525,3 +525,6 @@ class water(spectrum,correlation,surface):
         #             pdi=10**6,bbox_inches='tight')
 #        show()
 # plt.loglog(water.k0,water.full_spectrum(water.k0))
+water = water()
+water.plot('surface')
+plt.show()

@@ -1,0 +1,69 @@
+
+\documentclass[final,hyperref={pdfpagelabels=false},16pt]{beamer}
+\usetheme{Berlin}
+\usefonttheme{professionalfonts} % using non standard fonts for beamer
+\usefonttheme{serif} % default family is serif
+
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[orientation=portrait,size=a0,scale=1,debug]{beamerposter}
+\usepackage
+	{
+		% Дополнения Американского математического общества (AMS)
+		amssymb,
+		amsfonts,
+		amsmath,
+		amsthm,
+		physics,
+		graphicx
+		}
+\setbeamertemplate{navigation symbols}{} % минус навигация
+\let\Tiny=\tiny % решает проблему со шрифтами в TexLive
+\setbeamertemplate{headline}{
+	\leavevmode
+	\begin{beamercolorbox}[wd=\paperwidth]{headline}
+		\vspace{2ex}\\
+		\begin{columns}[c]
+			\begin{column}{.09\paperwidth}
+			\end{column}
+			\begin{column}{.675\paperwidth}
+				\raggedleft
+				\usebeamercolor{title in headline}{\textbf{\LARGE{\inserttitle}}\\[1ex]}
+				\usebeamercolor{author in headline}{\large{\insertauthor}\\[1ex]}
+				\usebeamercolor{institute in headline}{\small{\insertinstitute}\\[1ex]}
+			\end{column}
+			\begin{column}{.25\paperwidth}
+				\begin{center}
+                    \includegraphics[width=.8\textwidth, height=.39\textwidth, keepaspectratio]{rf3}
+				\end{center}
+			\end{column}
+			\begin{column}{.03\paperwidth}
+			\end{column}
+		\end{columns}
+		\vspace{2ex}\\
+	\end{beamercolorbox}
+
+ 	\begin{beamercolorbox}[wd=\paperwidth]{lower separation line head}
+		\rule{0pt}{2pt}
+	\end{beamercolorbox}
+	\vskip-2cm
+	}
+
+\setbeamertemplate{footline}{
+	\begin{beamercolorbox}[wd=\paperwidth]{upper separation line foot}
+		\rule{0pt}{2pt}
+	\end{beamercolorbox}
+	\leavevmode%
+	\begin{beamercolorbox}[ht=4ex,leftskip=1cm,rightskip=1cm]{author in head/foot}%
+		{Оформлено при помощи издательской системы \LaTeX}
+        \hfill
+		\today
+		\hfill
+		\href{mailto:my_address@wikibooks.org}{github.com/kannab98}
+		\vskip1ex
+	\end{beamercolorbox}
+	\vskip0pt%
+	\begin{beamercolorbox}[wd=\paperwidth]{lower separation line foot}
+		\rule{0pt}{2pt}
+	\end{beamercolorbox}
+	}
