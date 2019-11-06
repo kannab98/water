@@ -16,5 +16,5 @@ D = np.fft.ifft(1j*np.sign(freq)*hat_z)
 # plt.plot(freq,np.abs(hat_z)/z.size)
 plt.plot(x+D,z)
 # plt.plot(x,D)
-plt.show()
 
+plt.show()

@@ -12,12 +12,25 @@
     \begin{columns}[t]
       \begin{column}{.48\linewidth}
         \begin{block}{Введение}
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-            tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
-            vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
-            no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            Для изучения и мониторинга состояния морской поверхности активно используются радиолокаторы. 
+            Благодаря орбитальным скаттерометрам измеряется поле приводного ветра в Мировом океане, радиовысотомеры измеряют высоту значительного волнения и средний уровень
+            морской поверхности. Для обнаружения разливов нефти и нефтепродуктов активно используются радиолокаторы с синтезированной апертурой.
+
+            Современные достижения в радиолокационном зондировании базируются на результатах исследования рассеяния электромагнитных волн морской поверхностью. Тем не менее, остается ряд нерешенных 
+            вопросов по моделям рассеяния. Также, существующие радиолокационные системы не всегда позволяют получить необходимую информацию о состоянии приповерхностного слоя океана, что обуславливает необходимость совершенствования измерительной аппаратуры. 
+
+            На этапе поиска оптимальной схемы измерения необходимо оценить вклад в спектральные и энергетические характеристики отраженного сигнала параметров волнения, течений, поверхностных пленок. Численное моделирование является мощным инструментом, позволяющим решать эти задачи.
         \end{block}
         \begin{block}{Моделирование}
+            Рассмотрим задачу моделирования морской поверхности по заданному спектру волнения.
+
+            Спектр двумерного волнения представим в виде функции с разделяющимися переменными (см. рис. \ref{fig:spec}):
+        \begin{equation}
+            \label{eq:}
+            S(\vec k) = S(k) \Phi_k(\phi), ~ k = \sqrt{k_x^2+k_y^2},~ \phi=\arctg{\frac{k_x}{k_y}},\quad \int\limits_{-\pi}^{\pi} \Phi_k(\phi) \dd{\phi} = 1.
+        \end{equation}
+        
+            Поверхность представим как сумму гармоник с детерменированными амплитудами и случайными фазами
         \begin{equation}
             \zeta(\vec r, t)= \sum\limits_{n=1}^N \sum_{m=1}^M A_n(k_n)\cdot 
             \Phi_{k_nm}(\phi_m) \cos(\omega_n t + \vec k_n \vec r + \psi_{nm}),
@@ -31,33 +44,47 @@
         \Phi_{nm}(k_n,\phi_m)=\sqrt{\Phi(k_n,\phi_m) \Delta \phi},
         \end{equation}
         $\Delta \phi$ -- шаг по углу
-        
         \begin{figure}[h]
-            \centering
-            \includegraphics[width=0.6\linewidth]{water10.png}
-            \caption{Пример моделируемой поверхности}
-            \label{fig:1}
-        \end{figure}
-        \begin{figure}[h]
-            \begin{minipage}{0.32\linewidth}
-                \includegraphics[width=\linewidth]{fig/full_spectrum1}
+            \begin{minipage}{0.24\linewidth}
+                \includegraphics[width=\linewidth]{example-image-a}
                 \centering
                 (a)
             \end{minipage}
-            \begin{minipage}{0.32\linewidth}
-                \includegraphics[width=\linewidth]{fig/full_angles1}
+            \begin{minipage}{0.24\linewidth}
+                \includegraphics[width=\linewidth]{example-image-a}
                 \centering
                 (b)
             \end{minipage}
-            \begin{minipage}{0.32\linewidth}
-                \includegraphics[width=\linewidth]{fig/full_angles2}
+            \begin{minipage}{0.24\linewidth}
+                \includegraphics[width=\linewidth]{fig/full_angles1}
                 \centering
                 (c)
             \end{minipage}
-            \caption{Используемый двумерный спектр (a) Зависимость от модуля (b,с) Зависимость от направления}
+            \begin{minipage}{0.24\linewidth}
+                \includegraphics[width=\linewidth]{fig/full_angles2}
+                \centering
+                (d)
+            \end{minipage}
+            \label{fig:spec}
+            \caption{(a) Спектр высот $S(k)$ при фиксированном значении  $\tilde x = 20170$ и меняющейся скорости ветра 
+            (b) Спектр высот $S(k)$ при фиксированном значении скорости ветра $U_{10} = 10 \frac{\text{м}}{\text{с}}$ и меняющемся разгоне 
+        (c,d) Угловое распределение  $\Phi_k(\phi)$ в полярных координатах для разных значений соотношений  $\frac{k}{k_m}$, где $k_m$ - координата пика спектра $S(k)$ при фиксированной скорости ветра}
+        \end{figure}
+        \begin{figure}[h]
+            \begin{minipage}{0.45\linewidth}
+                \includegraphics[width=\linewidth]{water5}
+                \centering
+                (a)
+            \end{minipage}
+            \begin{minipage}{0.45\linewidth}
+                \includegraphics[width=\linewidth]{water15}
+                \centering
+                (b)
+            \end{minipage}
+            \caption{Пример смоделированной поверхности (a) $U_{10} = 5 \text{ м/с }$ (b) $U_{10} = 15 \text{ м/с}$}
         \end{figure}
         \end{block}
-        \begin{block}{Модель заостренной волны (CWM)}
+        \begin{block}{Модель заостренной волны (Choppy wave model)}
             Модель заключается в нелинейном преобразовании координат
             \begin{gather}
                 x = x_{0} - \sum\limits_{j} \frac{\vec k_j}{\abs{\vec k_j}} \cdot \vec x_{0} \sin(\vec k_j \vec r_{0} - \omega_j t + \phi_j) \\
@@ -79,23 +106,25 @@
                 \label{eq:}
                 \sigma^2_{\alpha \beta \gamma} = \iint \frac{ \abs{k_x}^{\alpha} \abs{k_y}^{\beta}}{\abs{\vec k}^{\gamma}} \dd{\vec k}
             \end{equation}
+              \begin{figure}[h]
+                    \centering
+                    \begin{minipage}{0.45\linewidth}
+                        \includegraphics[width=\linewidth]{example-image-a}
+                        \centering 
+                        (a)
+                    \end{minipage}
+                    \begin{minipage}{0.45\linewidth}
+                        \includegraphics[width=\linewidth]{example-image-a}
+                        \centering
+                        (b)
+                    \end{minipage}
+                    \caption{Эволюция (a) <<линейной>>  и (b) <<нелинейной>>  систем, $\Delta t = 0.1 \text{ с}$}
+                    \label{fig:}
+                \end{figure}
+
+
         \end{block}
-        \begin{block}{Заключение}
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-            tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
-            vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren
-            no sea takimata sanctus est Lorem ipsum dolor sit amet.
-        \end{block}
-        \begin{block}{Литература}
-            \footnotesize
-            \begin{thebibliography}{}
-                \bibitem{Rytov} \textit{С.М. Рытов}, Введение в статистическую радиофизику // Изд. 2-е, перераб. и доп. - Москва : Наука, 1976. - Ч. 1. Случайные процессы \S\S 14-18, 38-42 
-                \bibitem{Karaev1} \textit{В.Ю.Караев, М.Б. Каневский, Г.Н. Баландина}, Численное моделирование поверхностного волнения и дистанционное зондирование // Препринт №552 ИПФ РАН, 2002, С.1-10.
-                \bibitem{Veber} \textit{В.Л. Вебер}, О моделировании случайного профиля морской поверхности // Изв. вузов. Радиофизика. 2017. Т. 60, № 4. С. 346.
-                \bibitem{Karaev2} \textit{В.Ю.Караев, Г.Н. Баландина} Модифицированный спектр волнения и дистанционное зондирование // Исследование Земли из космоса, 2000, N5, C.1-12.
-                \bibitem{Longe} \textit{М.С. Лонге-Хиггинс} Статистический анализ случайной движущейся поверхности // в кн.: Ветровые волны, М.: Иностранная наука, 1962, С.112-230
-            \end{thebibliography}
-        \end{block}
+        
       \end{column}
       \begin{column}{.48\linewidth}
         \begin{block}{Метод <<отбеливания>> спектра}
@@ -137,7 +166,7 @@
             \end{equation}
             А значит можно переписать наше требование в виде
             \begin{equation}
-                \sum_{i=1}^N b_ik_i^{2p}=\int\limits_{0}^{\infty} k^{2p}S(k)\dd{k}, p = 1,2,\dots,N.
+                \sum_{i=1}^N b_i k_i^{2p}=\int\limits_{0}^{\infty} k^{2p}S(k)\dd{k}, p = 1,2,\dots,N.
             \end{equation}
             Решать такую систему довольно сложно, поэтому потребуем выполнение более простого равенства
             \begin{equation}
@@ -172,6 +201,40 @@
                     \caption{Расположении узлов по методу <<отбеливания>> спектра  для наклонов и высот соответственно. $U=10 \frac{\text{м}}{c}$, $N=25$}
                     \label{fig:splits}		
                 \end{figure}
+
+                \begin{figure}[h]
+                    \centering
+                    \begin{minipage}{0.49\linewidth}
+                            \centering
+                            \includegraphics[width=\linewidth]{example-image-a}
+
+                            (a)
+                    \end{minipage}
+                    \begin{minipage}{0.49\linewidth}
+                            \centering
+                            \includegraphics[width=\linewidth]{example-image-a}
+
+                            (b)
+                    \end{minipage}
+                    \caption{Корреляционные функции высот (a) и уклонов (b) при различных расположениях узлов. $U=10\frac{\text{м}}{\text{с}},~ N = 256$ }
+                    \label{fig:}
+                \end{figure}
+        \end{block}
+        \begin{block}{Заключение}
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
+            vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren
+            no sea takimata sanctus est Lorem ipsum dolor sit amet.
+        \end{block}
+        \begin{block}{Литература}
+            \footnotesize
+            \begin{thebibliography}{}
+                \bibitem{Rytov} \textit{С.М. Рытов}, Введение в статистическую радиофизику // Изд. 2-е, перераб. и доп. - Москва : Наука, 1976. - Ч. 1. Случайные процессы \S\S 14-18, 38-42 
+                \bibitem{Karaev1} \textit{В.Ю.Караев, М.Б. Каневский, Г.Н. Баландина}, Численное моделирование поверхностного волнения и дистанционное зондирование // Препринт №552 ИПФ РАН, 2002, С.1-10.
+                \bibitem{Veber} \textit{В.Л. Вебер}, О моделировании случайного профиля морской поверхности // Изв. вузов. Радиофизика. 2017. Т. 60, № 4. С. 346.
+                \bibitem{Karaev2} \textit{В.Ю.Караев, Г.Н. Баландина} Модифицированный спектр волнения и дистанционное зондирование // Исследование Земли из космоса, 2000, N5, C.1-12.
+                \bibitem{Longe} \textit{М.С. Лонге-Хиггинс} Статистический анализ случайной движущейся поверхности // в кн.: Ветровые волны, М.: Иностранная наука, 1962, С.112-230
+            \end{thebibliography}
         \end{block}
       \end{column}
     \end{columns}
