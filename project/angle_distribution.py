@@ -7,12 +7,12 @@ import water
 from matplotlib import rc
 
 
-surface = water.Surface()
+surface = water.Surface(wind=np.pi/2)
 
 
 # rcParams['figure.figzise'] = [8,8]
 plt.rcParams['axes.labelsize'] = 20
-rc('text',usetex=True)
+rc('text',usetex=False)
 rc('text.latex',preamble=[r'\usepackage[russian]{babel}'])
 rc('font',family = 'serif')
 

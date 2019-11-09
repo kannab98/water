@@ -6,7 +6,7 @@ from tqdm import tqdm
 import water
 from matplotlib import rc
 plt.rcParams['axes.labelsize'] = 20
-rc('text',usetex=True)
+rc('text',usetex=False)
 rc('text.latex',preamble=[r'\usepackage[russian]{babel}',r'\usepackage{amsmath}'])
 rc('font',family = 'serif')
 
@@ -72,16 +72,16 @@ plt.plot(rho,height_sum(k,rho),label='a')
 plt.plot(rho,height_sum(klog,rho),label='b')
 plt.plot(rho,heights,label='c')
 plt.legend()
-plt.savefig('/home/kannab/documents/water/poster/fig/corr1.pdf')
-print(np.std(heights)-np.std(height_sum(k,rho)), 
-np.std(heights)-np.std(height_sum(klog,rho)))
+# plt.savefig('/home/kannab/documents/water/poster/fig/corr1.pdf')
+print(np.linalg.norm(heights-height_sum(k,rho))/
+np.linalg.norm(heights-height_sum(klog,rho)))
 plt.figure()
 slopes = angles(rho)
 plt.plot(rho,angles_sum(k,rho),label='a')
 plt.plot(rho,angles_sum(klog,rho),label='b')
 plt.plot(rho,slopes,label='c')
-print(np.std(slopes)-np.std(angles_sum(k,rho)),
-np.std(slopes)-np.std(angles_sum(k,rho))) 
+print(np.linalg.norm(slopes-angles_sum(k,rho))/
+np.linalg.norm(slopes-angles_sum(klog,rho))) 
 plt.legend()
-plt.savefig('/home/kannab/documents/water/poster/fig/corr2.pdf')
+# plt.savefig('/home/kannab/documents/water/poster/fig/corr2.pdf')
 plt.show()
