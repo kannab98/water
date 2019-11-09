@@ -6,7 +6,7 @@ from tqdm import tqdm
 import water
 from matplotlib import rc
 plt.rcParams['axes.labelsize'] = 20
-rc('text',usetex=False)
+rc('text',usetex=True)
 rc('text.latex',preamble=[r'\usepackage[russian]{babel}'])
 rc('font',family = 'serif')
 
@@ -17,12 +17,12 @@ print(surface.k_m)
 print(surface.sigma_sqr)
 x0 = np.linspace(0,50,10**5)
 y0 = 0
-T = [0,0.2,0.4]
+T = [0]
 
 fig,ax = plt.subplots(nrows = 1, ncols = 1)
 x, y = np.meshgrid(x0, y0)
-style=['-', '--', ':']
-label=['$t=0$','$t=\Delta t$','$t=2\Delta t$']
+# style=['-', '--', ':']
+# label=['$t=0$','$t=\Delta t$','$t=2\Delta t$']
 i=0
 for t in T:
     z_real = surface.model([x,y],t)[0]

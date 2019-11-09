@@ -6,7 +6,7 @@ from tqdm import tqdm
 import water
 from matplotlib import rc
 plt.rcParams['axes.labelsize'] = 20
-rc('text',usetex=False)
+rc('text',usetex=True)
 rc('text.latex',preamble=[r'\usepackage[russian]{babel}'])
 rc('font',family = 'serif')
 

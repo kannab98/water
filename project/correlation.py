@@ -1,9 +1,15 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from numpy import pi
 from scipy import interpolate,integrate
 from tqdm import tqdm
 import water
+from matplotlib import rc
+plt.rcParams['axes.labelsize'] = 20
+rc('text',usetex=True)
+rc('text.latex',preamble=[r'\usepackage[russian]{babel}',r'\usepackage{amsmath}'])
+rc('font',family = 'serif')
+
 N = 128
 M = 1
 
@@ -48,7 +54,6 @@ def height(rho,k, fourier = 'real'):
         S=surface.spectrum(k)
         integral=np.fft.fft(S,n=k.size)
         return integral
-        
 def height_sum(k,rho):
     f=0
     f=np.zeros(len(rho))
@@ -59,20 +64,24 @@ def height_sum(k,rho):
     return f
 
 from numpy.linalg import norm
-fix,ax = plt.subplots(1,2)
 rho = np.linspace(0,100,1000)
 klog= np.logspace(np.log10(surface.KT[0]), np.log10(surface.KT[-1]), N)
 heights = height(rho,k0)
-ax[0].plot(rho,heights)
-ax[0].plot(rho,height_sum(k,rho))
-ax[0].plot(rho,height_sum(klog,rho))
+plt.figure()
+plt.plot(rho,height_sum(k,rho),label='a')
+plt.plot(rho,height_sum(klog,rho),label='b')
+plt.plot(rho,heights,label='c')
+plt.legend()
+plt.savefig('/home/kannab/documents/water/poster/fig/corr1.pdf')
 print(np.std(heights)-np.std(height_sum(k,rho)), 
 np.std(heights)-np.std(height_sum(klog,rho)))
+plt.figure()
 slopes = angles(rho)
-ax[1].plot(rho,slopes)
-ax[1].plot(rho,angles_sum(k,rho))
-ax[1].plot(rho,angles_sum(klog,rho))
+plt.plot(rho,angles_sum(k,rho),label='a')
+plt.plot(rho,angles_sum(klog,rho),label='b')
+plt.plot(rho,slopes,label='c')
 print(np.std(slopes)-np.std(angles_sum(k,rho)),
 np.std(slopes)-np.std(angles_sum(k,rho))) 
-
+plt.legend()
+plt.savefig('/home/kannab/documents/water/poster/fig/corr2.pdf')
 plt.show()

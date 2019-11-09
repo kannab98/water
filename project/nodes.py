@@ -4,7 +4,13 @@ from numpy import pi
 from scipy import interpolate,integrate
 from tqdm import tqdm
 import water
-N = 39
+from matplotlib import rc
+plt.rcParams['axes.labelsize'] = 20
+rc('text',usetex=True)
+rc('text.latex',preamble=[r'\usepackage[russian]{babel}',r'\usepackage{amsmath}'])
+rc('font',family = 'serif')
+N = 50000
+
 M = 1
 
 t = 0
@@ -14,25 +20,19 @@ y0 = 0
 surface = water.Surface(N=N, M=M, whitening=1)
 k = surface.k
 k0 = surface.k0
-fix,ax = plt.subplots(1,2)
 S = surface.spectrum(k)
-ax[0].loglog(k,S,'.')
-ax[0].stem(surface.k_heights, surface.spectrum(surface.k_heights), 
-            use_line_collection=True, markerfmt = ' ',linefmt='C0-', label='Высоты',
-            bottom=min(S))
+plt.figure(figsize=[8,6])
+plt.loglog(k0,surface.spectrum(k0),'-',color='black')
+plt.stem(surface.k_heights, surface.spectrum(surface.k_heights),
+            use_line_collection=True, markerfmt = ' ',linefmt='darkblue', label='Высоты',
+            bottom=0)
 
-ax[0].stem(surface.k_slopes, surface.spectrum(surface.k_slopes), 
-            use_line_collection=True, markerfmt = ' ', linefmt='C1-', label='Наклоны',
-            bottom=min(S))
-ax[1].loglog(k,k**2*surface.spectrum(k),'.')
-ax[1].stem(surface.k_heights, surface.k_heights**2*surface.spectrum(surface.k_heights), 
-            use_line_collection=True, markerfmt = ' ',linefmt='C0-', label='Высоты',
-            bottom=min(S))
-
-ax[1].stem(surface.k_slopes, surface.k_slopes**2*surface.spectrum(surface.k_slopes), 
-            use_line_collection=True, markerfmt = ' ', linefmt='C1-', label='Наклоны',
-            bottom=min(S))
-ax[0].legend()
-ax[1].legend()
+plt.stem(surface.k_slopes, surface.spectrum(surface.k_slopes),
+            use_line_collection=True, markerfmt = ' ', linefmt='r', label='Наклоны',
+            bottom=0)
+plt.xlabel(r'$k, \text{ рад}\cdot\text{м}^{-1}$')
+plt.ylabel(r'S,~\text{a.u.}')
+plt.legend()
+# plt.savefig('/home/kannab/documents/water/poster/nodes.pdf')
 plt.show()
 
