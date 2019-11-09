@@ -3,7 +3,7 @@ import numpy as np
 from scipy import interpolate, integrate
 
 class Spectrum:
-    def __init__(self, U10 = 5, x = 20170,):
+    def __init__(self, U10 = 5, x = 20170, KT = None):
         # ускорение свободного падения.
         self.g = 9.81
         # скорость ветра на высоте 10 м над уровнем моря.
@@ -18,6 +18,8 @@ class Spectrum:
         self.k_m = self.k_max( self.omega_m )
         # массив с границами моделируемого спектра.
         self.KT = np.array([self.k_m/4,self.k_m*1000])
+        if KT != None:
+            self.KT = np.array(KT)
         # k0 -- густая сетка, нужна для интегрирования и интерполирования
         self.k0= np.logspace(np.log10(self.KT[0]), np.log10(self.KT[-1]), 10**4)
 
