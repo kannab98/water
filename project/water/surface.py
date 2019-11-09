@@ -8,7 +8,7 @@ class Surface(Spectrum):
     def __init__(self,  N=256, M=100, space='log', random_phases = 1, **kwargs):
         Spectrum.__init__(self,**kwargs)
         self.get_spectrum()
-        self.N = N 
+        self.N = N
         self.M = M
         KT = self.KT
         self.k = np.logspace(np.log10(KT[0]), np.log10(KT[-1]),self.N + 1)
@@ -48,8 +48,8 @@ class Surface(Spectrum):
 
 
     def angle(self,k,phi):
-        M = self.M 
-        N = self.N 
+        M = self.M
+        N = self.N
         # print(k.size)
         Phi = lambda phi,k: self.Phi(k,phi)
         integral = np.zeros((N,M))
@@ -95,8 +95,8 @@ class Surface(Spectrum):
         print()
         return self.surface
 
-    def D(self,r):
-        N = self.N 
+    def D(self,r,t):
+        N = self.N
         M = self.M
         k = self.k
         phi = self.phi
@@ -110,13 +110,13 @@ class Surface(Spectrum):
                 Dx += A[n]  * np.cos(phi[m]) *\
                 np.cos(
                         +k[n]*(r[0]*np.cos(phi[m])+r[1]*np.sin(phi[m]))
-                        +psi[n][m] + np.pi/2)  \
+                        +psi[n][m] + np.pi/2+self.omega_k(k[n])*t)  \
                         * F[n][m]
 
                 Dy += A[n]  * np.sin(phi[m]) *\
                 np.cos(
                         +k[n]*(r[0]*np.cos(phi[m])+r[1]*np.sin(phi[m]))
-                        +psi[n][m] + np.pi/2)  \
+                        +psi[n][m] + np.pi/2+self.omega_k(k[n])*t)  \
                         * F[n][m]
 
 

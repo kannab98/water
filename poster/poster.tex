@@ -7,6 +7,7 @@
 \newcommand{\tM}{\widetilde{M}}
 \usepackage{mathtools}
 \mathtoolsset{showonlyrefs}
+\newcommand{\mean}[1]{\langle #1 \rangle}
 \begin{document}
   \begin{frame}[t]{} 
     \begin{columns}[t]
@@ -27,13 +28,13 @@
             Спектр двумерного волнения представим в виде функции с разделяющимися переменными (см. рис. \ref{fig:spec}):
         \begin{equation}
             \label{eq:}
-            S(\vec k) = S(k) \Phi_k(\phi), ~ k = \sqrt{k_x^2+k_y^2},~ \phi=\arctg{\frac{k_x}{k_y}},\quad \int\limits_{-\pi}^{\pi} \Phi_k(\phi) \dd{\phi} = 1.
+            S(\vec k) = S(k) \Phi(\phi), ~ k = \sqrt{k_x^2+k_y^2},~ \phi=\arctg{\frac{k_x}{k_y}},\quad \int\limits_{-\pi}^{\pi} \Phi(\phi) \dd{\phi} = 1.
         \end{equation}
         
             Поверхность представим как сумму гармоник с детерменированными амплитудами и случайными фазами
         \begin{equation}
             \zeta(\vec r, t)= \sum\limits_{n=1}^N \sum_{m=1}^M A_n(k_n)\cdot 
-            \Phi_{k_nm}(\phi_m) \cos(\omega_n t + \vec k_n \vec r + \psi_{nm}),
+            \Phi_{nm}(\phi_m) \cos(\omega_n t + \vec k_n \vec r + \psi_{nm}),
         \end{equation}
         Амплитуда, которая является мощностью на интервале $\Delta k_n$, вычисляется по спектру моделируемой поверхности
         \begin{equation}
@@ -46,12 +47,12 @@
         $\Delta \phi$ -- шаг по углу
         \begin{figure}[h]
             \begin{minipage}{0.24\linewidth}
-                \includegraphics[width=\linewidth]{example-image-a}
+                \includegraphics[width=\linewidth]{fig/full_spectrum1}
                 \centering
                 (a)
             \end{minipage}
             \begin{minipage}{0.24\linewidth}
-                \includegraphics[width=\linewidth]{example-image-a}
+                \includegraphics[width=\linewidth]{fig/full_spectrum1}
                 \centering
                 (b)
             \end{minipage}
@@ -84,29 +85,29 @@
             \caption{Пример смоделированной поверхности (a) $U_{10} = 5 \text{ м/с }$ (b) $U_{10} = 15 \text{ м/с}$}
         \end{figure}
         \end{block}
-        \begin{block}{Модель заостренной волны (Choppy wave model)}
+        \begin{block}{<<Choppy wave>> model}
+            На практике, волна имеет не синусоидальную форму, а несколько заостренную, поэтому при моделировании необходимо учесть этот эффект.
+            %Для этого к стандартному подходу моделирования применялась модикация:  чоппи вав модел. 
             Модель заключается в нелинейном преобразовании координат
             \begin{gather}
-                x = x_{0} - \sum\limits_{j} \frac{\vec k_j}{\abs{\vec k_j}} \cdot \vec x_{0} \sin(\vec k_j \vec r_{0} - \omega_j t + \phi_j) \\
-                y = y_{0} - \sum\limits_{j} \frac{\vec k_j}{\abs{\vec k_j}} \cdot \vec y_{0} \sin(\vec k_j \vec r_{0} - \omega_j t + \phi_j) \\
-                z =  \sum\limits_{j=1} a_j \cos(k_j \cdot \vec r_{0} - \omega_j + \phi_j)
+                x = x_{0} - \sum\limits_{n=1}^N \sum_{m=1}^M \frac{\vec k_n}{\abs{\vec k_n}} \vec x_0 A_n(k_n)\cdot 
+            \Phi_{nm}(\phi_m) \sin(\omega_n t + \vec k_n \vec r_0 + \psi_{nm}),\\
+                y = y_{0} - \sum\limits_{n=1}^N \sum_{m=1}^M \frac{\vec k_n}{\abs{\vec k_n}} \vec y_0 A_n(k_n)\cdot 
+            \Phi_{nm}(\phi_m) \sin(\omega_n t + \vec k_n \vec r_0 + \psi_{nm}),\\
+            \zeta(\vec r, t)= \sum\limits_{n=1}^N \sum_{m=1}^M A_n(k_n)\cdot 
+            \Phi_{nm}(\phi_m) \cos(\omega_n t + \vec k_n \vec r_0 + \psi_{nm}).
             \end{gather}
-            Или человеческим языком:
-            \begin{equation}
-                \label{eq:}
-                \qty{\vec r, h(\vec r,t)} \to \qty{\vec r + \vec D(\vec r,t), h(\vec r,t)},
-            \end{equation}
-            где $\vec r = (x,y)$ -- горизонтальная координата, $D(\vec r,t)$ -- Riesz Transform
-            Характеристическая функция такого процесса
-            \begin{equation}
-                \label{eq:}
-                \theta(u) = \qty(1 - i u \sigma_1^2 + u^2 \Sigma_1) \exp{-\frac{1}{2} u^2 \sigma_0^2}
-            \end{equation}
-            \begin{equation}
-                \label{eq:}
-                \sigma^2_{\alpha \beta \gamma} = \iint \frac{ \abs{k_x}^{\alpha} \abs{k_y}^{\beta}}{\abs{\vec k}^{\gamma}} \dd{\vec k}
-            \end{equation}
-              \begin{figure}[h]
+            Зная исходный спектр волнения мы можем посчитать все статистические характеристики нового процесса
+            \begin{gather}
+                \mean{\tilde \zeta} =  - \sigma_1^2, \quad \mean{\tilde \zeta^2} = \sigma_0^2 - 2\Sigma_1\\
+                \mean{\tilde \zeta^3} = -3 \sigma_0^2 \sigma_1^2, \quad \mean{\tilde \zeta^4} = 3 \sigma_0^4 
+                \qty(1- 4 \frac{\Sigma_{1}}{\sigma_0^2}), \text{ где}
+            \end{gather}
+            \begin{gather}
+                \sigma^2_{\alpha \beta } = \int \frac{{k_x}^\alpha {k_y}^{\beta}}{\qty(\sqrt{k_x^2+k_y^2})}S(\vec k) \dd{\vec k}, \quad
+                \sigma_n^2 = \int k^n S(\vec k) \dd{\vec k},\quad \Sigma_1 = \sigma_{11}^4 - \sigma_{20}^2 \sigma_{02}^2
+            \end{gather}
+            \begin{figure}[h]
                     \centering
                     \begin{minipage}{0.45\linewidth}
                         \includegraphics[width=\linewidth]{example-image-a}
@@ -189,15 +190,20 @@
                 Решением будем считать суперпозицию решения системы уравнений
                 \eqref{eq:cases} для высот и наклонов
                 \begin{figure}[H]
-                    \begin{minipage}{0.49\linewidth}
+                    \begin{minipage}{0.32\linewidth}
                             \centering
                             \includegraphics[width=\linewidth]{fig/split_angles}	
                     \end{minipage}
                     \hfill
-                    \begin{minipage}{0.49\linewidth}
+                    \begin{minipage}{0.32\linewidth}
                             \centering
                             \includegraphics[width=\linewidth]{fig/split_height}
                     \end{minipage}
+                    \begin{minipage}{0.32\linewidth}
+                            \centering
+                            \includegraphics[width=\linewidth]{example-image-a}
+                    \end{minipage}
+
                     \caption{Расположении узлов по методу <<отбеливания>> спектра  для наклонов и высот соответственно. $U=10 \frac{\text{м}}{c}$, $N=25$}
                     \label{fig:splits}		
                 \end{figure}
@@ -221,19 +227,22 @@
                 \end{figure}
         \end{block}
         \begin{block}{Заключение}
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-            tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
-            vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren
-            no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            В данной работе было проведено сравнение различных подходов разбиения частотной плоскости на участки, что позволило выбрать оптимальное разбиение. В результате, по сравнению с равномерным разбиением, число гармоник при одинаковой точности удалось уменьшить почти на порядок.
+
+Однако, смоделированная с помощью суммы синусоид поверхность будет отличаться от морской поверхности, так как волна имеет заостренную и ассиметричную форму.
+Поэтому кроме «линейной» поверхности в ходе исследования моделировалась «нелинейная» поверхность.
+Для этого использовался подход, предложенный в \cite{CWM}, что позволило обострить гребни волн.
+Нелинейная поверхность будет использоваться для проведения «численных» экспериментов с радиолокаторами, что повысит достоверность модельных оценок.
+
+
+Задача, которую планируется рассмотреть в ходе дальнейших исследований, связана с моделированием асимметричных волн.
         \end{block}
         \begin{block}{Литература}
             \footnotesize
             \begin{thebibliography}{}
-                \bibitem{Rytov} \textit{С.М. Рытов}, Введение в статистическую радиофизику // Изд. 2-е, перераб. и доп. - Москва : Наука, 1976. - Ч. 1. Случайные процессы \S\S 14-18, 38-42 
                 \bibitem{Karaev1} \textit{В.Ю.Караев, М.Б. Каневский, Г.Н. Баландина}, Численное моделирование поверхностного волнения и дистанционное зондирование // Препринт №552 ИПФ РАН, 2002, С.1-10.
                 \bibitem{Veber} \textit{В.Л. Вебер}, О моделировании случайного профиля морской поверхности // Изв. вузов. Радиофизика. 2017. Т. 60, № 4. С. 346.
-                \bibitem{Karaev2} \textit{В.Ю.Караев, Г.Н. Баландина} Модифицированный спектр волнения и дистанционное зондирование // Исследование Земли из космоса, 2000, N5, C.1-12.
-                \bibitem{Longe} \textit{М.С. Лонге-Хиггинс} Статистический анализ случайной движущейся поверхности // в кн.: Ветровые волны, М.: Иностранная наука, 1962, С.112-230
+                \bibitem{CWM} F. Nouguier, <<Choppy wave>> model for nonlinear gravity waves // Journal of Geophysical Research, v.114, 2009, p. 1-16
             \end{thebibliography}
         \end{block}
       \end{column}
