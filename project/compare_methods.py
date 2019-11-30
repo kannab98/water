@@ -51,7 +51,7 @@ def height_sum(k,rho):
     for j in range(len(rho)):
             f[j]=sum( A**2/2*np.cos(k*rho[j]) )
     return f
-NN = [i for i in range(10,256,2)]
+NN = [i for i in range(10,256,20)]
 H=[]
 S0=[]
 Hlog=[]
@@ -63,7 +63,7 @@ for i in NN:
     t = 0
     x0 = np.linspace(0,400,400)
     y0 = 0
-    surface = water.Surface(N=N, M=M, whitening='s', KT=[0.05,2000])
+    surface = water.Surface(N=N, M=M, whitening='hs', KT=[0.05,2000])
     k = surface.k
     k0 = surface.k0
     S = surface.spectrum(k)
@@ -71,32 +71,21 @@ for i in NN:
     klog= np.logspace(np.log10(surface.KT[0]), np.log10(surface.KT[-1]), N)
     heights = height(rho,k0)
 
-
-    # plt.plot(rho,height_sum(k,rho),label='a')
-    # plt.plot(rho,height_sum(klog,rho),label='b')
-    # plt.plot(rho,heights,label='c')
-    # plt.legend()
-    # plt.savefig('/home/kannab/documents/water/poster/fig/corr1.pdf')
     H.append(np.linalg.norm(heights-height_sum(k,rho)))
     Hlog.append(np.linalg.norm(heights-height_sum(klog,rho)))
 
-    # plt.figure('2')
     slopes = angles(rho)
-    # plt.plot(rho,angles_sum(k,rho),label='a')
-    # plt.plot(rho,angles_sum(klog,rho),label='b')
-    # plt.plot(rho,slopes,label='c')
     S0.append(np.linalg.norm(slopes-angles_sum(k,rho)))
     Slog.append(np.linalg.norm(slopes-angles_sum(klog,rho)))
-    # plt.legend()
-    # plt.savefig('/home/kannab/documents/water/poster/fig/corr2.pdf')
     plt.show()
+
 plt.figure('1')
-plt.plot(H,label='white')
-plt.plot(Hlog,label='log')
+plt.plot(NN,H,label='white')
+plt.plot(NN,Hlog,label='log')
 plt.legend()
 
 plt.figure('2')
-plt.plot(S0,label='white')
-plt.plot(Slog,label='log')
+plt.plot(NN,S0,label='white')
+plt.plot(NN,Slog,label='log')
 plt.legend()
 plt.show()

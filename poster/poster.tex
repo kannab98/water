@@ -4,7 +4,7 @@
 \institute{$^{1}$ Нижегородский Государственный Университет им. М.Ю. Лобачевского \\
           $^2$ Институт Прикладной Физики Российской Академии Наук}
 \date{\today}
-\newcommand{\tM}{\widetilde{M}}
+\newcommand{\tK}{\widetilde{K}}
 \usepackage{mathtools}
 \mathtoolsset{showonlyrefs}
 \newcommand{\mean}[1]{\langle #1 \rangle}
@@ -73,16 +73,16 @@
         \end{figure}
         \begin{figure}[h]
             \begin{minipage}{0.45\linewidth}
-                \includegraphics[width=\linewidth]{water5}
+                \includegraphics[width=\linewidth]{fig/water5.png}
                 \centering
                 (a)
             \end{minipage}
             \begin{minipage}{0.45\linewidth}
-                \includegraphics[width=\linewidth]{water15}
+                \includegraphics[width=\linewidth]{fig/water10}
                 \centering
                 (b)
             \end{minipage}
-            \caption{Пример смоделированной поверхности (a) $U_{10} = 5 \text{ м/с }$ (b) $U_{10} = 15 \text{ м/с}$}
+            \caption{Пример смоделированной поверхности при разной скорости и направлении ветра (a) $U_{10} = 5 \text{ м/с }$, (b) $U_{10} = 10 \text{ м/с}$}
         \end{figure}
         \end{block}
         \begin{block}{<<Choppy wave>> model}
@@ -129,41 +129,39 @@
       \end{column}
       \begin{column}{.48\linewidth}
         \begin{block}{Метод <<отбеливания>> спектра}
-            Предположим, что гармонические составляющие при больших $\rho$ складываются <<некогерентным>> образом. То есть  мощность шума определяется как
+            Предположим, что гармонические составляющие при больших $\rho=r_{2}-r_{1}$ складываются <<некогерентным>> образом. То есть  мощность шума определяется как
             \begin{equation}
                 \sigma^2_{\text{шум}}= \sum_{i=1}^N \frac{b_i^2}{2}
             \end{equation}
             В области малых $\rho$ гармоники суммируются <<когерентно>> и соответствующая мощность равна
             \begin{equation}
-                \tM^2(0)=\qty(\sum_{i=1}^N b_i)^2
+                \tK^2(0)=\qty(\sum_{i=1}^N b_i)^2
             \end{equation}
             Введем функцию, характеризующую относительную мощность шумов
             \begin{equation}
                 \label{eq:Q}
-                Q = \frac{\sigma^2_{\text{шум}}}{\tM^2(0)}
+                Q = \frac{\sigma^2_{\text{шум}}}{\tK^2(0)}
             \end{equation}
             Минимизируем величину \eqref{eq:Q}, решая систему уравнений
             \begin{equation}
                 \label{eq:cases}
-                \pdv{Q}{b_i}=\frac{b_i}{\qty (\sum\limits_{i=1}^{N} b_i)^2} - \frac{\sum\limits_{i=1}^{N} b_i^2}{\qty (\sum\limits_{i=1}^{N} b_i)^3}, ~ i = 1\hdots N.
+                \pdv{Q}{b_i}=\frac{b_i}{\qty (\sum\limits_{j=1}^{N} b_j)^2} - \frac{\sum\limits_{j=1}^{N} b_j^2}{\qty (\sum\limits_{j=1}^{N} b_j)^3}, ~ i = 1\hdots N.
             \end{equation}
-            Она сводится к следующей системе:  $b_i \sum\limits_{i=1}^{N} b_i -\sum\limits_{i=1}^{N} b_i^2=0 $
+            Она сводится к следующей системе:  $b_i \sum\limits_{j=1}^{N} b_j -\sum\limits_{j=1}^{N} b_j^2=0 $
              \vfill
-            Частным результатом решения является $b_1=b_2=\hdots=b_N$.
+            Частным решением этой системы является $b_1=b_2=\hdots=b_N$.
             \vfill
-    % Задача сводится к разбиению области определения спектра на участки $\Delta k_i$, интегралы по которым от функции $S(k)$ имеют одинаковые значения.
-
            \begin{equation}
-                \text{Для высот:}\quad 	b_i=b_1= \frac{M(0)}{N}=\frac1N \int\limits_0^{\infty} S(k) \dd{k}
+                \text{Для высот:}\quad 	b_i=b_1= \frac{K(0)}{N}=\frac1N \int\limits_0^{\infty} S(k) \dd{k}
            \end{equation}
            \begin{equation}
-                \text{Для наклонов:}\quad 	b^{\theta}_i=b^{\theta}_1= \frac{M^{\theta}(0)}{N}=\frac1N \int\limits_0^{\infty} k^2S(k) \dd{k}
+                \text{Для наклонов:}\quad 	b^{\theta}_i=b^{\theta}_1= \frac{K^{\theta}(0)}{N}=\frac1N \int\limits_0^{\infty} k^2S(k) \dd{k}
            \end{equation}
             Потребуем сопряжения в нуле всех производных  функций
-            $\tM(\rho)$ и $M(\rho)$. 
-            Для функции корреляции стационарной случайной функции $M(\rho)$ справедливо
+            $\tK(\rho)$ и $K(\rho)$. 
+            Для функции корреляции стационарной случайной функции $K(\rho)$ справедливо
             \begin{equation}
-                M'_{\rho}=\pdv[2]{M(\rho)}{\rho}=\int\limits_{0}^{\infty} k^2 S(k)\cos(k \rho)\dd{k}
+                K'_{\rho}=\pdv[2]{K(\rho)}{\rho}=\int\limits_{0}^{\infty} k^2 S(k)\cos(k \rho)\dd{k}
             \end{equation}
             А значит можно переписать наше требование в виде
             \begin{equation}
@@ -188,7 +186,24 @@
                 \end{minipage}
                 \vfill
                 Решением будем считать суперпозицию решения системы уравнений
-                \eqref{eq:cases} для высот и наклонов
+                \eqref{eq:cases} для высот и наклонов.
+
+                Точность моделирования будем определять близостью корреляционной функции реального волнения $K(\rho)$ с корреляционной функцией модельного $\widetilde K(\rho)$. 
+                \begin{equation}
+                    \label{eq:}
+                    \eta = \norm{K(\rho) - \widetilde K(\rho)} = \sqrt{\sum\limits_i {\qty( K(\rho_i) - \widetilde K(\rho_i) )^2}}  
+                \end{equation}
+                Сравним значения $\eta$ для логарифмического разбиения частотной плоскости $\eta_0$ и для метода отбеливания спектра $\eta_1$.
+
+                \begin{center}
+                    
+                \begin{tabular}{|c|c|c|c|c|c|}
+                    $\eta_0^{\text{в}}$ & $\eta_0^{\text{н}}$ & $\eta_1^{\text{н}}$ & $\eta_1^{\text{в}}$ & $\eta_1^{\text{н}}/\eta_0^{\text{н}}$ & $\eta_1^{\text{н}}/\eta_0^{\text{н}}$ \\ [0.5ex]
+
+                \hline 
+                    0.018 & 0.056 & 0.007 & 0.049 & 0.4 & 0.86
+             \end{tabular}
+                \end{center}
                 \begin{figure}[H]
                     \begin{minipage}{0.32\linewidth}
                             \centering
@@ -204,12 +219,10 @@
                     \vspace{-15pt}
                             \includegraphics[width=\linewidth]{nodes}
                     \end{minipage}
-
                     \caption{Расположении узлов по методу <<отбеливания>> спектра  для (a) наклонов и (b) высот соответственно. $U=10 \frac{\text{м}}{c}$, $N=25$; (c) суперпозиция 
                     метода <<отбеливания>> для высот и наклонов}
                     \label{fig:splits}		
                 \end{figure}
-
                 \begin{figure}[h]
                     \centering
                     \begin{minipage}{0.49\linewidth}
@@ -224,17 +237,19 @@
 
                             (b)
                     \end{minipage}
-                    \caption{Корреляционные функции высот и уклонов  при различных расположениях гармоник. $U=5\frac{\text{м}}{\text{с}},~ N = 128$; (a) расположение по методу <<отбеливания>> спектра, (b) логарифмическое расположение, (c) теоретическая кривая }
+                    \caption{Корреляционные функции высот и уклонов  при различных расположениях гармоник. $U=5\frac{\text{м}}{\text{с}},~ N = 128$; 
+                    (a) расположение по методу <<отбеливания>> спектра, 
+                    (b) логарифмическое расположение;
+                    (c) теоретическая корреляционная функция }
                     \label{fig:}
                 \end{figure}
         \end{block}
         \begin{block}{Заключение}
-            В данной работе было проведено сравнение различных подходов разбиения частотной плоскости на участки, что позволило выбрать оптимальное разбиение. В результате, по сравнению с равномерным разбиением, число гармоник при одинаковой точности удалось уменьшить почти на порядок.
+            \small
+            В данной работе была произведена оптимизация разбиения частотной плоскости на участки, что позволило добиться увеличения точности моделирования при сохранении количества спектральных компонент.
 
-Однако, смоделированная с помощью суммы синусоид поверхность будет отличаться от морской поверхности, так как волна имеет заостренную и ассиметричную форму.
-Поэтому кроме «линейной» поверхности в ходе исследования моделировалась «нелинейная» поверхность.
-Для этого использовался подход, предложенный в \cite{CWM}, что позволило обострить гребни волн.
-Нелинейная поверхность будет использоваться для проведения «численных» экспериментов с радиолокаторами, что повысит достоверность модельных оценок.
+Однако, смоделированная с помощью суммы синусоид поверхность будет отличаться от морской поверхности, так как реальная волна имеет заостренную и ассиметричную форму.  Поэтому кроме «линейной» поверхности в ходе исследования моделировалась «нелинейная» поверхность.
+Для этого использовался подход, предложенный в \cite{CWM}, что позволило обострить гребни волн.  Нелинейная поверхность будет использоваться для проведения «численных» экспериментов с радиолокаторами, что повысит достоверность модельных оценок.
 
 
 Задача, которую планируется рассмотреть в ходе дальнейших исследований, связана с моделированием асимметричных волн.
@@ -245,6 +260,9 @@
                 \bibitem{Karaev1} \textit{В.Ю.Караев, М.Б. Каневский, Г.Н. Баландина}, Численное моделирование поверхностного волнения и дистанционное зондирование // Препринт №552 ИПФ РАН, 2002, С.1-10.
                 \bibitem{Veber} \textit{В.Л. Вебер}, О моделировании случайного профиля морской поверхности // Изв. вузов. Радиофизика. 2017. Т. 60, № 4. С. 346.
                 \bibitem{CWM} F. Nouguier, <<Choppy wave>> model for nonlinear gravity waves // Journal of Geophysical Research, v.114, 2009, p. 1-16
+                \bibitem{Ryabkova} M.Rybkova, V.Karaev, J.Guo and Yu. Tichenko, "A Review 
+                of Wave Spectrum Models as Applied to the Problem of Radar Probing 
+                of the Sea Surface" // Journal of Geophysical Research: Oceans
             \end{thebibliography}
         \end{block}
       \end{column}

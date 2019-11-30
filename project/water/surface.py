@@ -6,7 +6,7 @@ from water.spectrum import Spectrum
 
 class Surface(Spectrum):
     def __init__(self,  N=256, M=100, space='log', 
-        random_phases = 1, whitening = 0, wind = 0,**kwargs):
+        random_phases = 1, whitening = None, wind = 0,**kwargs):
         Spectrum.__init__(self,**kwargs)
         self.get_spectrum()
         self.N = N
@@ -14,17 +14,22 @@ class Surface(Spectrum):
         KT = self.KT
         self.wind = wind # Направление ветра
         self.k = np.logspace(np.log10(KT[0]), np.log10(KT[-1]),self.N + 1)
-        if whitening == 1:
-            interspace = self.interspace(self.k, N//2, power=0)
-            # print(interspace)
-            self.k_heights = self.nodes(interspace,power=0)
-            interspace = self.interspace(self.k, N, power=2)
-            self.k_slopes = self.nodes(interspace,power=2)  
-            # self.k_slopes = np.logspace(np.log10(KT[0]), np.log10(KT[-1]),self.N)
-            self.k = np.hstack((self.k_heights,self.k_slopes))
-            self.k = np.sort(self.k)
+        if whitening != None:
+            if 'h' in whitening:
+                interspace = self.interspace(self.k, N, power=0)
+                self.k_heights = self.nodes(interspace,power=0)
+                self.k = self.k_heights
 
-        self.phi=np.linspace(0,2*np.pi,self.M + 1) 
+            if 's' in whitening:
+                interspace = self.interspace(self.k, N, power=2)
+                self.k_slopes = self.nodes(interspace,power=2)
+                self.k = self.k_slopes
+
+            if 'h' in whitening and 's' in whitening:
+                self.k = np.hstack((self.k_heights,self.k_slopes))
+                self.k = np.sort(self.k)
+
+        self.phi=np.linspace(0,2*np.pi,self.M + 1)
         self.phi_c = self.phi + self.wind
 
         # случайные фазы
