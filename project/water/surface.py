@@ -5,7 +5,7 @@ from tqdm import tqdm
 from water.spectrum import Spectrum
 
 class Surface(Spectrum):
-    def __init__(self,  N=256, M=100, space='log', 
+    def __init__(self,  N=256, M=100, space='log',
         random_phases = 1, whitening = None, wind = 0,**kwargs):
         Spectrum.__init__(self,**kwargs)
         self.get_spectrum()
@@ -29,7 +29,7 @@ class Surface(Spectrum):
                 self.k = np.hstack((self.k_heights,self.k_slopes))
                 self.k = np.sort(self.k)
 
-        self.phi=np.linspace(0,2*np.pi,self.M + 1)
+        self.phi = np.linspace(0,2*np.pi,self.M + 1)
         self.phi_c = self.phi + self.wind
 
         # случайные фазы
@@ -79,7 +79,7 @@ class Surface(Spectrum):
                 integral[i][j] = np.trapz( Phi( phi[j:j+2],k[i] ), phi[j:j+2])
         amplitude = np.sqrt(2 *integral )
         return amplitude
-    
+
     def amplitude(self, k):
         N = len(k)
         S = self.spectrum
@@ -88,7 +88,7 @@ class Surface(Spectrum):
         return np.array(amplitude)
 
     def model(self,r,t):
-        N = self.N 
+        N = self.N
         M = self.M
         self.k = self.k[:N]
         k = self.k
@@ -135,7 +135,7 @@ class Surface(Spectrum):
                 Dy += A[n]  * np.sin(phi[m]) *\
                 np.cos(
                         +k[n]*(r[0]*np.cos(phi[m])+r[1]*np.sin(phi[m]))
-                        +psi[n][m] + np.pi/2+self.omega_k(k[n])*t)  \
+                        +psi[n][m] + np.pi/2 + self.omega_k(k[n])*t)  \
                         * F[n][m]
 
 

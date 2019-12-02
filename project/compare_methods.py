@@ -51,7 +51,7 @@ def height_sum(k,rho):
     for j in range(len(rho)):
             f[j]=sum( A**2/2*np.cos(k*rho[j]) )
     return f
-NN = [i for i in range(10,256,20)]
+NN = [i for i in range(64,512,2)]
 H=[]
 S0=[]
 Hlog=[]
@@ -79,13 +79,17 @@ for i in NN:
     Slog.append(np.linalg.norm(slopes-angles_sum(klog,rho)))
     plt.show()
 
-plt.figure('1')
+plt.figure('СКО высот')
 plt.plot(NN,H,label='white')
 plt.plot(NN,Hlog,label='log')
+plt.xlabel('N, количество гармоник')
+plt.ylabel('СКО')
 plt.legend()
 
-plt.figure('2')
+plt.figure('СКО наклонов')
 plt.plot(NN,S0,label='white')
 plt.plot(NN,Slog,label='log')
 plt.legend()
+plt.xlabel('N, количество гармоник')
+plt.ylabel('СКО')
 plt.show()

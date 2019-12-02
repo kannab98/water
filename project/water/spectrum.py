@@ -40,7 +40,7 @@ class Spectrum:
     def det(self,k):
     #        Функция возвращает Якобиан при переходе от частоты к
     #    волновым числам по полному дисперсионному уравнению
-        det=(self.g+3*k**2*0.074/1000)/(2*np.sqrt(self.g*k+k**3*0.074/1000) )
+        det=(self.g + 3*k**2*0.074/1000 )/(2*np.sqrt(self.g*k+k**3*0.074/1000) )
         return det
 
     def k_max(self,omega_max):

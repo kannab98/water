@@ -51,7 +51,7 @@ def height_sum(k,rho):
     for j in range(len(rho)):
             f[j]=sum( A**2/2*np.cos(k*rho[j]) )
     return f
-NN = [i for i in range(10,256,2)]
+NN = [i for i in range(64,512,2)]
 H=[]
 S0=[]
 Hlog=[]

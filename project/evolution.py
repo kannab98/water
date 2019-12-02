@@ -21,8 +21,8 @@ T = [0]
 
 fig,ax = plt.subplots(nrows = 1, ncols = 1)
 x, y = np.meshgrid(x0, y0)
-# style=['-', '--', ':']
-# label=['$t=0$','$t=\Delta t$','$t=2\Delta t$']
+style=['-', '--', ':']
+label=['$t=0$','$t=\Delta t$','$t=2\Delta t$']
 i=0
 for t in T:
     z_real = surface.model([x,y],t)[0]
