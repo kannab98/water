@@ -1,0 +1,650 @@
+% Тип документа
+\documentclass[a4paper,14pt]{extarticle}
+
+% Шрифты, кодировки, символьные таблицы, переносы
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+% Это пакет -- хитрый пакет, он нужен но не нужен
+\usepackage[mode=buildnew]{standalone}
+
+\usepackage
+    {
+        % Дополнения Американского математического общества (AMS)
+        amssymb,
+        amsfonts,
+        amsmath,
+        amsthm,
+        % Пакет для физических текстов
+        physics,
+        % misccorr,
+        % 
+        % Графики и рисунки
+        wrapfig,
+        graphicx,
+        subcaption,
+        float,
+        caption,
+        color,
+        booktabs,
+        geometry,
+        % 
+        % Таблицы, списки
+        makecell,
+        multirow,
+        indentfirst,
+        %
+        % Интегралы и прочие обозначения
+        ulem,
+        esint,
+        esdiff,
+        % 
+        % Колонтитулы
+        fancyhdr,
+    } 
+    
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs=true} 
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{pythontex}
+ % Цвета для гиперссылок
+\definecolor{linkcolor}{HTML}{000000} % цвет ссылок
+\definecolor{urlcolor}{HTML}{799B03} % цвет гиперссылок
+ 
+\hypersetup{linkcolor=linkcolor,urlcolor=urlcolor, colorlinks=true}
+\hypersetup{pageanchor=false}
+% Увеличенный межстрочный интервал, французские пробелы
+\linespread{1.3} 
+\frenchspacing 
+
+\newcommand{\mean}[1]{\langle#1\rangle}
+\newcommand\ct[1]{\text{\rmfamily\upshape #1}}
+\newcommand*{\const}{\ct{const}}
+
+\usepackage{array}
+\usepackage{pstool}
+
+\geometry       
+    {
+        left            =   2cm,
+        right           =   2cm,
+        top             =   2.5cm,
+        bottom          =   2.5cm,
+        bindingoffset   =   0cm
+    }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %применим колонтитул к стилю страницы
+\pagestyle{fancy} 
+    %очистим "шапку" страницы
+% \fancyhead{} 
+    %слева сверху на четных и справа на нечетных
+\fancyhead[R]{\small Понур К.А.}%\labauthors 
+    %справа сверху на четных и слева на нечетных
+% \fancyhead[L]{Отчёт по лабораторной работе №\labnumber}
+\fancyhead[L]{Кафедра общей физики} 
+    %очистим "подвал" страницы
+% \fancyfoot{} 
+    % номер страницы в нижнем колинтуле в центре
+\fancyfoot[C]{} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\contentsname}{Оглавление}
+\usepackage{tocloft}
+\usepackage{secdot}
+\sectiondot{subsection}
+
+\begin{document}
+\section{Спектральное представление непериодических сигналов}%
+Пусть $U(t)$ одиночный импульс конечной длительности. Создадим периодическую
+последовательность с периодом $T$ и представим её комплексным рядом Фурье
+\begin{equation}
+    \label{eq:1}
+    U_{\text{периодич} } (t) = \sum\limits_{n=-\infty}^{\infty} C_n \exp{ i n \omega_0 t},
+\end{equation}
+где 
+\begin{equation}
+    \label{eq:2}
+    C_n =\frac{1}{T} \int\limits_{- \frac{T}{2}}^{\frac{T}{2}} U(t) \exp{-in\omega_{0}t } \dd t
+\end{equation}
+
+Для того, чтобы перейти к спектральному представлению единичного импульса, устремим $T \to  \infty$.
+
+Из \eqref{eq:2} видно, что при $T \to \infty$ получаем:
+\begin{enumerate}
+    \item Бесконечно-малые амплитудные коэффициенты $C_n$ (из-за наличия $T$ 
+        в знаменателе);
+    \item Частоты соседник гармоник $n \omega_{0}$ и $(n+1) \omega_{0}$ 
+        становятся  сколь угодно близкими (т.к. $\omega=\frac{2\pi}{T}$ ;
+    \item Число гармоник, входящих в ряд Фурье, становится бесконечно большим, т.к. при $T \to \infty$ основная частота $\omega_{0} = \frac{2 \pi}{T} \to 0$ ,
+        т.е. спектр становится сплошным.
+\end{enumerate}
+Подставим \eqref{eq:1}  в \eqref{eq:2}, получим: 
+\begin{equation}
+    \label{eq:3}
+    U(t) = \sum\limits_{n=-\infty}^{\infty} 
+    \qty( 
+    \int\limits_{- \frac{T}{2}}^{\frac{T}{2}} U(x) \exp(-in \omega_{0} t)
+        )  
+        \cdot \exp(in\omega_{0} t) \cdot \frac{\omega_{0}}{2 \pi},
+\end{equation}
+т.к. $T \to \infty $, то  $\omega_{0} = \frac{2\pi}{T} \to 0$, 
+а значит в \eqref{eq:3}  можно перейти от суммирования к интегрированию 
+$\omega_{0}$, $n \omega_{0} \to \omega$, 
+$\sum\limits_{n=-\infty}^{\infty} \to \int\limits_{-\infty}^{\infty}  $. 
+Таким образом, получаем двойной интеграл Фурье
+\begin{equation}
+    \label{eq:5}
+    U(t) = \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} e^{i \omega t} 
+    \qty[ 
+    \underbrace{ 
+    \int\limits_{-\infty}^{\infty} U(x) e^{- i \omega x} \dd x
+}_{S(\omega)}
+        ] \dd \omega.
+\end{equation}
+
+\begin{equation}
+    \boxed{
+    S(\omega) = \int\limits_{-\infty}^{\infty} U(t) e^{-i\omega t} \dd{t} 
+}
+\end{equation}
+Функцию $S(\omega)$ здесь и далее будем называть 
+\textbf{прямым преобразованием Фурье} функции $U(t)$ или 
+\textbf{спектарльной плотностью сигнала} $U(t)$.
+
+С учетом обозначений, получим
+\begin{equation}
+    \label{eq:6}
+    \boxed{
+    U(t) = \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} 
+            S(\omega) e^{i \omega t} \dd \omega }
+\end{equation}
+\eqref{eq:6} есть \textbf{обратное преобразование Фурье}.
+
+Амплитудно-частотной характеристикой сигнала $U(t)$ будем называть 
+\begin{equation}
+    \abs{S(\omega)} = \sqrt{ \Re{S(\omega)}^2 + \Im{S(\omega)}^2} 
+\end{equation} 
+
+Фаза-частотной характеристикой сигнала $U(t)$ будем называть функцию
+\begin{equation}
+    \label{eq:}
+    \Theta(\omega) = \arctg{\frac{\Im{S(\omega)}}{\Re{S(\omega)}}}
+\end{equation}
+
+\section{Основные свойства преобразований Фурье}%
+\paragraph{Сложение сигналов}%
+Преобразование Фурье линейно.
+Если 
+\begin{equation}
+    \label{eq:}
+    U(t) = U_{1}(t) + U_{2}(t) + \dots + U_n(t),
+\end{equation}
+то 
+\begin{equation}
+    \label{eq:}
+    S(\omega) = S_{1}(\omega) + S_{2}(\omega) + \dots + S_n (\omega),
+\end{equation}
+
+
+\paragraph{Теорема запаздывания}%
+\begin{equation}
+    \label{eq:}
+    U_{2}(t) = U_{1}(t-t_{0})
+\end{equation}
+\begin{gather}
+    \label{eq:}
+    S_{2}(\omega) = \int U_1(t - t_{0}) e^{- i \omega t} \dd t =
+    \qty{\theta = t -t_{0}, \dd t = \dd \theta} = \\ 
+    \int\limits_{-\infty}^{\infty} 
+    U_1 (\theta) e^{- i \omega(\theta+t_{0})} \dd{\theta}  = e^{-i\omega t_{0}}
+    S_{1}(\omega);
+\end{gather}
+
+\begin{equation}
+    \label{eq:}
+    \boxed{
+    S_{2}(\omega) = e^{-i \omega t_{0}} S_{1}(\omega)}
+\end{equation}
+
+\paragraph{Изменение масштаба времени}%
+$U_2(t) = U_{1}(nt)$, $n>1$ -- сжатие сигнала, $n<1$ -- расширение сигнала.
+\begin{equation}
+    \label{eq:}
+    S_{2} (\omega) = \int\limits_{0}^{\frac{\tau}{n}} U_{2}(t) e^{-i\omega t}
+    = \int\limits_{0}^{\frac{\tau}{n}}  U_{1}(nt) e^{-i \omega t} \dd t.
+\end{equation}
+После замены переменных $nt = \theta, \dd t = \dd(\frac{\theta}{t})$
+ отсюда имеем
+\begin{equation}
+    \label{eq:}
+    S_{2}(\omega) = \frac{1}{n} \int\limits_{0}^{\frac{\tau}{n}}  
+    U_{1}(\theta) e^{-i \frac{\omega}{n} \theta} \dd \theta = \frac{1}{n}
+    S_1\qty(\frac{\omega}{n})
+\end{equation}
+\begin{equation}
+    \label{eq:}
+    \boxed{
+        S_{2}(\omega) = \frac{1}{n} S_{1}(\frac{\omega}{n})
+    }
+\end{equation}
+\paragraph{Произведение двух сигналов}%
+Рассмотрим составной сигнал $U(t) = f(t) \cdot g(t)$, где 
+$f(t) = \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} 
+F(\omega) e^{i \omega t} \dd \omega $, и 
+$g(t) = \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} 
+G(\omega) e^{i \omega t} \dd \omega $.  
+Найдём прямое преобразование Фурье:
+\begin{equation}
+    \label{eq:}
+    S(\omega) = \int\limits_{-\infty}^{\infty} 
+    f(t)\cdot g(t) e^{-i \omega t} \dd t = 
+    \frac{1}{(2 \pi)^2} \iiint F(x) G(y) \exp{- i(\omega - x - y)t} \dd{x} \dd{y} \dd{t} 
+\end{equation}
+Учтем, что 
+$\int\limits_{-\infty}^{\infty}   \exp{-i(\omega-x-y)t} \dd t = 
+2 \pi \delta(x+y - \omega) $
+\begin{equation}
+    \label{eq:}
+    \frac{1}{2 \pi}  \iint F(x) G(y) \delta(x+y-\omega) \dd{x} \dd{y}
+\end{equation}
+Применим фильтрующее свойство дельта-функции к функции $F(x)$ 
+\begin{equation}
+    \label{eq:}
+    S(\omega) = \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} 
+    F(\omega - y) G(y) \dd{y}
+\end{equation}
+\begin{equation}
+    \label{eq:}
+    \boxed{
+        S(\omega) = \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} 
+        G(x) F(\omega - x) \dd{x}  ~ 
+    } \text{ -- свертка спектров сомножителей.}
+\end{equation}
+
+
+\section{Choppy Wave Model}
+\subsection{Обычный CWM}%
+
+Рассмотрим задачу моделирования одномерной поверхности суммой гармоник 
+ с детерменированными амплитудами и случайными фазами
+ \begin{equation}
+     \label{eq:}
+     z = \sum\limits_{j=0}^{N} A_j \cos(k_j x + \psi_j)
+ \end{equation}
+
+Чтобы получить модель заостренной волны введем нелинейное преобразование координат
+\begin{equation}
+    \label{eq:}
+    \qty{x,z(x)} \longrightarrow \qty{x + D(x),z(x)},
+\end{equation}
+где $D(x)$ горизонтальное смещение
+\begin{equation}
+    \label{eq:}
+    D(x) =  \frac{i}{2\pi} \int\limits_{-\infty}^{\infty}   S(k) e^{ikx} \dd{k},
+\end{equation}
+а $S(k)$ -- прямое Фурье преобразование исходной поверхности
+\begin{equation}
+    \label{eq:}
+    S(k) = \int\limits_{-\infty}^{\infty} z(x) e^{-ikx} \dd x 
+\end{equation}
+
+В нашем случае, функция $D(x)$ примет вид: 
+\begin{equation}
+    \label{eq:}
+    \begin{cases}
+    x = x_{0} \underbrace{
+    - \sum\limits_{j=0}^{N} A_j \sin(k_j x_0 + \psi_j)
+    }_{D(x)} \\
+        z = \sum\limits_{j=0}^{N} \cos(k_j x_{0} + \psi_j)
+    \end{cases}
+\end{equation}
+Это и есть Choppy Wave Model. График подобной заостренной поверхности 
+изображен на рис.\ref{fig:1}
+
+
+Рассчитаем спектр  поверхности, построенной по CWM.
+
+ Спектр поверхности в новых координатах 
+ \begin{equation}
+     \label{eq:S_cwm}
+     \widehat S(k) = \int\limits_{-\infty}^{\infty} z(x) \cdot  
+     e^{-ikx} \qty[ 1 + D'(x)]
+     \dd{x}  = S(k) + \int\limits_{-\infty}^{\infty} z(x) \cdot D'(x)  
+     e^{-ikx}\dd{x},
+ \end{equation}
+
+ где $S(k)$-- исходный спектр (например, JONSWAP).
+
+ Пусть спектр $S(k)$ состоит из всего одной гармоники. Тогда, мы можем его
+ записать в виде
+ \begin{equation}
+     \label{eq:}
+     S(k) = \pi A_{0}( \delta(k-k_{0}) + \delta(k+k_{0}))
+ \end{equation}
+
+ Для такого спектра функция горизонтального смещения и её производная равны:
+ \begin{equation}
+     \label{eq:}
+     D(x) = -A_{0} \sin(k_{0} x), \quad
+     D'(x) = -A_{0} k_{0} \cos(k_{0} x)
+ \end{equation}
+
+ Запишем прямое преобразование Фурье для функции $D'(x)$:
+ \newcommand{\D}{\mathfrak{D}}
+  \begin{equation}
+     \label{eq:}
+     \D(k) = \int\limits_{-\infty}^{\infty} D'(x) e^{-ikx} \dd x =
+     - \pi A_{0}k_{0}\qty[\delta(k-k_{0})+\delta(k+k_{0})]
+ \end{equation}
+
+ Перепишем \eqref{eq:S_cwm}, применяя теорему о свертке:
+\begin{equation}
+    \label{eq:}
+    \widehat S(k) = S(k) +
+    \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} S(k-\xi) \D(\xi) \dd \xi 
+\end{equation}
+\begin{gather}
+    \label{eq:}
+    \widehat S(k) = S(k) + \frac{A_{0}}{2} \qty[\D(k-k_{0}) + \D(k+k_{0})] = \\
+    S(k) - \frac{\pi A_{0}^2}{2} k_{0} \qty[
+    \delta(k-2k_{0}) +
+    \delta(k+2k_{0}) +
+    \delta(k) +
+    \delta(k) 
+    ] = \\
+    \pi A_{0}[\delta(k+k_{0})+ \delta(k-k_{0})] -
+    \frac{\pi A_{0}^2k_{0}}{2}\qty[ \delta(k+2k_{0}) + 2\delta(k) +
+    \delta(k-2k_{0})]
+\end{gather}
+Итак, для частного случае, когда моделируемая поверхность представляет всего
+одну гармонику $z(x) = A_{0}\cos(k_{0}x)$
+Мы получили модифицированный спектр:
+\begin{equation}
+    \label{eq:}
+    \widehat S = 
+    \pi A_{0}[\delta(k+k_{0})+ \delta(k-k_{0})] -
+    \frac{\pi A_{0}^2k_{0}}{2}\qty[ \delta(k+2k_{0}) + 2\delta(k) +
+    \delta(k-2k_{0})]
+\end{equation}
+
+Очевидно, что если поверхность будет представляться суммой гармоник
+$z(x) = \sum\limits_{n=0}^{N} A_n \cos{k_n x}$,
+спектр примет вид
+\begin{equation}
+    \label{eq:}
+    \widehat S = 
+    \underbrace{
+    \sum\limits_{n=0}^{N} \pi A_n \qty[\delta(k+k_n) + \delta(k-k_n) ]
+}_{S(k)}
+\underbrace{
+- \sum\limits_{n=0}^{N} \frac{\pi A_{n}^2 k_n}{2}
+\qty[ \delta(k+2k_{n}) 
+    + 2\delta(k) 
++ \delta(k-2k_{n})]
+}_{S_{CWM}(k)}
+\end{equation}
+
+Добавка к исходному спектру выглядит следующим образом
+\begin{gather}
+    \label{eq:}
+    \boxed{
+    S_{CWM}(k) = - \sum\limits_{n=0}^{N} \pi A_{n}^2 k_n \delta(k) - 
+    \sum\limits_{n=0}^{N} \frac{\pi A_n^2 k_n}{2} \qty[\delta(k+2k_n) +
+    \delta(k-2k_n)]
+}
+\end{gather}
+
+\begin{figure}[H]
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{cwm_surface.pdf}
+
+        (a)
+        \caption{Заостренная синусоида (CWM) в сравнении обычной}
+        \label{fig:1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{cwm_spectrum.pdf}
+
+        (b)
+        \caption{Спектр заостренной синусоиды}
+        \label{fig:2}
+    \end{minipage}
+
+\end{figure}
+ \subsection{Модифицированный CWM}%
+ 
+ Для того, чтобы получить ассиметричную, заостренную поверхности введем другую
+ функцию горизонтального смещения
+ $D(x)$
+ \begin{equation}
+     D(x) = 
+     \begin{cases}
+          - A_{0} \sin(k_{0}x), &\text{ если }  0 \leq k_{0} x \leq  \pi \\
+         0, & \text{ если }  \pi < k_{0} x < 2 \pi
+     \end{cases}
+ \end{equation}
+И снова введем преобразование координат
+\begin{equation}
+    \label{eq:}
+    \qty{z(x),x} \to \qty{z(x), x + D(x)}
+\end{equation}
+ Спектр поверхности в новых координатах 
+ \begin{equation}
+     \label{eq:}
+     \widehat S(k) = \int\limits_{-\infty}^{\infty} z(x) \cdot  
+     e^{-ikx} \qty[ 1 + D'(x)]
+     \dd{x}  = S(k) + \int\limits_{-\infty}^{\infty} z(x) \cdot D'(x)  
+     e^{-ikx}\dd{x},
+ \end{equation}
+ где $S(k)$-- исходный спектр (например, JONSWAP).
+
+%\begin{figure}[h!]
+    %\begin{minipage}{0.45\linewidth}
+        %\centering
+        %\includegraphics[width=\linewidth]{example-image-a}
+        %\caption{График функции $D(x)$}
+    %\end{minipage}
+    %\hfill
+    %\begin{minipage}{0.45\linewidth}
+        %\centering
+        %\includegraphics[width=\linewidth]{example-image-a}
+        %\caption{График функции $D'(x)$}
+    %\end{minipage}
+    %\label{fig:}
+%\end{figure}
+
+ Задача сводится теперь к вычислению интеграла
+ \begin{equation}
+     \label{eq:}
+     I(k) = \int\limits_{-\infty}^{\infty} z(x) \cdot D'(x) e^{-ikx}\dd x 
+ \end{equation}
+
+
+
+Согласно теореме о свертке 
+\begin{equation}
+    \label{eq:I}
+    I(k) = \frac{1}{2\pi} \int\limits_{-\infty}^{\infty}  S(k-\xi) \D(\xi)\dd{\xi}, \text{ где}
+\end{equation}
+$\D(k) = \int\limits_{-\infty}^{\infty} D'(x) e^{-i k x}\dd{x} $,
+$S(k) = \int\limits_{-\infty}^{\infty} z(x) e^{-i k x}\dd{x} $ --
+обратное Фурье-преобразование функций $D'(x)$ и  $z(x)$ соответственно.
+\subsubsection{Нахождение спектральной плотности функции $D'(x)$}%
+Для простоты рассмотрим случай одной гармоники. 
+
+В этом случае $D(x)$ можно представить в виде модуляции гармонического сигнала
+прямоугольным сигналом.
+
+
+$D(x)$ представим в виде произведения двух функций 
+$D(x) = -A_{0}\sin(k_{0}x) \cdot  \Theta(k_{0} x)$,
+где $\Theta(k_{0}x)$ -- прямоугольный сигнал.
+
+Запишем прямое преобразование Фурье 
+\begin{gather}
+    \label{eq:D}
+    \D(k) = \int\limits_{-\infty}^{\infty} D'(x) e^{-ikx} \dd{x} = \\
+    - A_0 k_0\int\limits_{-\infty}^{\infty} 
+     \cos k_{0}x\cdot \Theta (k_{0} x) e^{-ikx}\dd x
+     - A_{0}
+     \underbrace{
+     \int\limits_{-\infty}^{\infty} 
+    \Theta'(k_{0} x) \sin(k_{0} x) e^{-ikx}\dd x
+}_{=~0} = \\
+    = \int\limits_{-\infty}^{\infty} 
+    \underbrace{- A_{0} k_{0} \cos k_{0}x\cdot}_{f(x)}
+    \underbrace{\Theta (k_{0} x) }_{g(x)}e^{-ikx}
+    \dd x = \int\limits_{-\infty}^{\infty} f(x) g(x) e^{-ikx} \dd x. 
+\end{gather}
+Осталось найти спектр функций $f(x)$ и  $g(x)$ и снова воспользоваться теоремой о свертке.
+
+\paragraph{Спектр функции $f(x)$.}%
+\begin{gather}
+    S_f(k) = - A_{0} k_{0}\int\limits_{-\infty}^{\infty} \frac{e^{+ik_{0}x} + e^{-ik_{0}x}}{2} e^{-ikx} \dd x = \\ 
+    - \frac{A_{0} k_{0}}{2}
+    \underbrace{ 
+         \int\limits_{-\infty}^{\infty} e^{-i(k-k_{0})x}\dd{x}  
+    }_{2 \pi \delta(k-k_{0})}
+    - \frac{A_{0} k_{0}}{2} 
+    \underbrace{
+    \int\limits_{-\infty}^{\infty} e^{-i(k-k_{0})x}\dd{x} 
+    }_{2 \pi \delta(k+k_{0})} = \\
+    -\frac{A_{0} k_{0}}{2} \cdot 2 \pi \qty{ \delta(k-k_{0}) + \delta(k+k_{0}) } = \\
+    \boxed{
+    - \pi A_{0} k_{0} \qty{ \delta(k-k_{0}) + \delta(k+k_{0})}
+    }
+\end{gather}
+
+\paragraph{Спектр функции $g(x)$.}%
+$X = \frac{2\pi}{k_{0}}$ -- период прямоугольного импульса, совпадающий с
+периодом синусоиды частотой 
+$k_0$. При этом $k_n = n k_0$
+\newcommand{\sinc}[1]{\textrm{sinc}\qty(#1)}
+\begin{gather}
+    C_n(k) = \frac{1}{X} \int\limits_{0}^{\frac{X}{2}} e^{-i k_n x} \dd{x} = 
+    \frac{1}{- i k_n X} e^{-i k_n x} \eval_{0}^{\frac{X}{2}} =
+    \frac{1}{- i k_n X} \qty( e^{-i \frac{k_n X}{2}} - 1) = \\
+    \frac{1}{- i k_n X} e^{-i \frac{k_n X}{4}}\qty( e^{-i \frac{k_n X}{4}} - e^{+i \frac{k_n X}{4}}) = \frac{e^{-i \frac{k_n X}{4}}}{2} \cdot \sinc{\frac{k_n X}{4}}
+\end{gather}
+
+\begin{gather}
+    \label{eq:G}
+    S_g(k) =\frac{e^{-i  \frac{\pi}{2 k_0}  k} }{2}\cdot
+    \sinc{\frac{\pi}{2k_{0}}k}\sum\limits_{n=-\infty}^{\infty}  2 \pi\delta(k - n
+    k_0)
+\end{gather}
+
+Вернемся к \eqref{eq:D} 
+\begin{equation}
+    \label{eq:}
+    \D(k) = \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} S_f(k-x) S_g(x) \dd{x} = - \frac{A_{0} k_{0}}{2} \qty[S_g(k-k_{0}) + S_g(k+k_{0})].
+\end{equation}
+Переобозначим $\D_{\pm}(k) = - \frac{A_{0} k_{0}}{2} S_g(k \mp k_{0})$.
+Распишем теперь эту формулу, используя \eqref{eq:G}:
+\begin{equation}
+    \label{eq:}
+    \D_{\pm} = -\frac{A_{0}k_{0}}{2} \cdot \frac{e^{-i  \frac{\pi}{2 k_0}
+    (k\mp k_{0})} }{2}\cdot
+    \sinc{\frac{\pi}{2k_{0}}(k\mp k_{0})}\sum\limits_{n=-\infty}^{\infty} 2\pi  \delta(k - n
+    k_0)
+\end{equation}
+
+
+%\begin{gather}
+    %\D(k) = - \frac{i A_0 k_0}{2}\cdot e^{-i \frac{\pi k}{2 k_{0}}} 
+    %\qty[
+    %-\sinc{\frac{\pi}{2k_{0}} (k-k_{0})} 
+    %+ \sinc{ \frac{\pi}{2k_{0}} (k+k_{0})}
+    %]
+    %\sum\limits_{n=-\infty}^{\infty} \delta(k - n k_{0})
+%\end{gather}
+%Отдельно посчитаем квадратную скобку:
+%\begin{gather}
+    %\label{eq:}
+    %\qty[
+    %-\frac{\pi}{2k_{0}} (k+k_{0})\sin{\frac{\pi}{2k_{0}} (k-k_{0})} 
+    %+ \frac{\pi}{2k_{0}} (k-k_{0}) \sin{ \frac{\pi}{2k_{0}} (k+k_{0})}
+    %]\cdot \frac{1}{\qty(\frac{\pi}{2k_{0}})^2(k^2-k_{0}^2)} = \\
+    %= 2 \cos(\frac{\pi k}{2 k_{0}})\cdot
+    %\frac{1}{\qty(\frac{\pi}{2k_{0}})(k^2-k_{0}^2)}
+%\end{gather}
+
+%Тогда:
+%\begin{gather}
+    %\D(k) = -iA_{0}k_{0} \cdot e^{-i\frac{\pi k}{2 k_{0}}}
+    %\cos(\frac{\pi k}{2 k_{0}})\cdot
+    %\frac{1}{\qty(\frac{\pi}{2k_{0}})(k^2-k_{0}^2)}
+    %\sum\limits_{n=-\infty}^{\infty} \delta(k - n k_{0}) = \\
+    %\label{eq:D_final}
+    %\boxed{
+        %\frac{2 A_{0}}{\pi}\frac{k_{0}^2}{k^2-k_{0}^2}
+        %\cos(\frac{\pi k}{2 k_{0}})\cdot
+        %\sum\limits_{n=-\infty}^{\infty} \delta(k - n k_{0}) 
+        %\cdot \exp{-i\frac{\pi k}{2 k_{0}} - i \frac{\pi}{2}} = \D(k)
+    %}
+%\end{gather}
+
+%Стоит заметить, что при $k = k_0$ у функции  $\D(k)$ в  \eqref{eq:D_final} 
+%нет никаких неопределенностей.
+%\begin{figure}[h]
+    %\centering
+    %\includegraphics[width=\linewidth]{example-image-a}
+    %\caption{График функции $\abs{\D(k)}$}
+    %\label{fig:D}
+%\end{figure}
+
+Вернемся теперь к уравнению \eqref{eq:I}. 
+Для него мы нашли $\D(k)$.
+в случае одной гармоники равен  $S(k) = \pi A_0 \qty{\delta(k-k_{0}) +
+\delta(k+k_{0})}$.
+Получаем
+%\begin{gather}
+    %I(k) = \frac{1}{2\pi} \int\limits_{-\infty}^{\infty}  S(k-\xi)
+    %\D(\xi)\dd{\xi} = \\
+    %\frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \pi A_{0}\qty{
+    %\delta(k-k_{0}-\xi) + \delta(k+k_{0}- \xi) } 
+    %\cdot\\
+    %\qty{ \frac{2A_{0}}{\pi} \frac{k_{0}^2}{\xi^2-k_{0}^2} \cos{\frac{\pi
+%\xi}{2 k_{0}}} \cdot \sum\limits_{n=-\infty}^{\infty} \delta(\xi-nk_{0})
+%} \cdot \exp{-i\frac{\pi k}{2 k_{0}} - i \frac{\pi}{2}} \dd \xi \\ = 
+%\frac{A_{0}^2}{\pi} \qty{\frac{k_{0}^2}{\xi^2-k_{0}^2} \cos{\frac{\pi
+%\xi}{2 k_{0}}} \cdot \sum\limits_{n=-\infty}^{\infty} \delta(\xi-nk_{0})
+%\cdot \exp{-i\frac{\pi k}{2 k_{0}} - i \frac{\pi}{2}}
+%} \eval_{\qty(k-k_{0}),\qty(k+k_{0})} 
+%\end{gather}
+
+\begin{gather}
+    I(k) = \frac{1}{2\pi} \int\limits_{-\infty}^{\infty}  S(k-\xi)
+    \D(\xi)\dd{\xi} = \\
+    \frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \pi A_{0}\qty{
+    \delta(\xi- (k-k_{0}) ) + \delta(\xi - (k+k_{0})) } 
+    \cdot \qty{\D_{+}(\xi) + \D_{-}(\xi)} \dd \xi = \\
+    \frac{A_{0}}{2} (
+    \D_{+}(k-k_{0}) +
+    \D_{+}(k+k_{0}) +
+    \D_{-}(k+k_{0}) +
+    \D_{-}(k-k_{0}) 
+    ) = \\
+    -\frac{A_{0}^2 k_{0}}{2} \qty[
+    S_g(k-2k_{0}) +
+    S_g(k+2k_{0}) +
+    2S_g(k)
+    ]
+\end{gather}
+
+\begin{equation}
+    \label{eq:}
+    \widehat S(k) = S(k)  
+    -\frac{A_{0}^2 k_{0}}{2} \qty[
+    S_g(k-2k_{0}) +
+    S_g(k+2k_{0}) +
+    2S_g(k)
+    ]
+\end{equation}
+\end{document}

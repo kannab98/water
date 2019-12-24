@@ -9,7 +9,6 @@ plt.rcParams['axes.labelsize'] = 20
 rc('text',usetex=True)
 rc('text.latex',preamble=[r'\usepackage[russian]{babel}'])
 rc('font',family = 'serif')
-
 N = 1000
 M = 1
 surface = water.Surface(N=N,M=M)
@@ -24,7 +23,13 @@ x, y = np.meshgrid(x0, y0)
 for t in T:
     z_real = surface.model([x,y],t)[0]
     Dx,Dy = surface.D([x,y],t)
-    ax.plot(x0+Dx[0],z_real,label='CWM',color='darkblue')
+    for i in range(Dx.shape[0]):
+        for j in range(Dx.shape[1]):
+            if Dx[i][j] > 0: Dx[i][j] = 0
+
+            if Dy[i][j] > 0: Dy[i][j] = 0
+
+    ax.plot(x0-np.abs(Dx[0]),z_real,label='CWM',color='darkblue')
     ax.plot(x0,z_real,'--r',label='Стандартный метод')
     ax.set_xlabel(r'X, м')
     ax.set_ylabel(r'Z, м')

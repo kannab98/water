@@ -46,6 +46,7 @@ class Surface(Spectrum):
         self.A = self.amplitude(self.k)
         # угловое распределение
         self.F = self.angle(self.k,self.phi)
+
     def B(self,k):
           def b(k):
               b=(
