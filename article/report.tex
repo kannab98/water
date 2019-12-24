@@ -111,7 +111,8 @@
     C_n =\frac{1}{T} \int\limits_{- \frac{T}{2}}^{\frac{T}{2}} U(t) \exp{-in\omega_{0}t } \dd t
 \end{equation}
 
-Для того, чтобы перейти к спектральному представлению единичного импульса, устремим $T \to  \infty$.
+Для того, чтобы перейти к спектральному представлению единичного импульса,
+устремим $T \to  \infty$.
 
 Из \eqref{eq:2} видно, что при $T \to \infty$ получаем:
 \begin{enumerate}
@@ -556,69 +557,11 @@ $k_0$. При этом $k_n = n k_0$
     k_0)
 \end{equation}
 
-
-%\begin{gather}
-    %\D(k) = - \frac{i A_0 k_0}{2}\cdot e^{-i \frac{\pi k}{2 k_{0}}} 
-    %\qty[
-    %-\sinc{\frac{\pi}{2k_{0}} (k-k_{0})} 
-    %+ \sinc{ \frac{\pi}{2k_{0}} (k+k_{0})}
-    %]
-    %\sum\limits_{n=-\infty}^{\infty} \delta(k - n k_{0})
-%\end{gather}
-%Отдельно посчитаем квадратную скобку:
-%\begin{gather}
-    %\label{eq:}
-    %\qty[
-    %-\frac{\pi}{2k_{0}} (k+k_{0})\sin{\frac{\pi}{2k_{0}} (k-k_{0})} 
-    %+ \frac{\pi}{2k_{0}} (k-k_{0}) \sin{ \frac{\pi}{2k_{0}} (k+k_{0})}
-    %]\cdot \frac{1}{\qty(\frac{\pi}{2k_{0}})^2(k^2-k_{0}^2)} = \\
-    %= 2 \cos(\frac{\pi k}{2 k_{0}})\cdot
-    %\frac{1}{\qty(\frac{\pi}{2k_{0}})(k^2-k_{0}^2)}
-%\end{gather}
-
-%Тогда:
-%\begin{gather}
-    %\D(k) = -iA_{0}k_{0} \cdot e^{-i\frac{\pi k}{2 k_{0}}}
-    %\cos(\frac{\pi k}{2 k_{0}})\cdot
-    %\frac{1}{\qty(\frac{\pi}{2k_{0}})(k^2-k_{0}^2)}
-    %\sum\limits_{n=-\infty}^{\infty} \delta(k - n k_{0}) = \\
-    %\label{eq:D_final}
-    %\boxed{
-        %\frac{2 A_{0}}{\pi}\frac{k_{0}^2}{k^2-k_{0}^2}
-        %\cos(\frac{\pi k}{2 k_{0}})\cdot
-        %\sum\limits_{n=-\infty}^{\infty} \delta(k - n k_{0}) 
-        %\cdot \exp{-i\frac{\pi k}{2 k_{0}} - i \frac{\pi}{2}} = \D(k)
-    %}
-%\end{gather}
-
-%Стоит заметить, что при $k = k_0$ у функции  $\D(k)$ в  \eqref{eq:D_final} 
-%нет никаких неопределенностей.
-%\begin{figure}[h]
-    %\centering
-    %\includegraphics[width=\linewidth]{example-image-a}
-    %\caption{График функции $\abs{\D(k)}$}
-    %\label{fig:D}
-%\end{figure}
-
 Вернемся теперь к уравнению \eqref{eq:I}. 
 Для него мы нашли $\D(k)$.
 в случае одной гармоники равен  $S(k) = \pi A_0 \qty{\delta(k-k_{0}) +
 \delta(k+k_{0})}$.
 Получаем
-%\begin{gather}
-    %I(k) = \frac{1}{2\pi} \int\limits_{-\infty}^{\infty}  S(k-\xi)
-    %\D(\xi)\dd{\xi} = \\
-    %\frac{1}{2\pi} \int\limits_{-\infty}^{\infty} \pi A_{0}\qty{
-    %\delta(k-k_{0}-\xi) + \delta(k+k_{0}- \xi) } 
-    %\cdot\\
-    %\qty{ \frac{2A_{0}}{\pi} \frac{k_{0}^2}{\xi^2-k_{0}^2} \cos{\frac{\pi
-%\xi}{2 k_{0}}} \cdot \sum\limits_{n=-\infty}^{\infty} \delta(\xi-nk_{0})
-%} \cdot \exp{-i\frac{\pi k}{2 k_{0}} - i \frac{\pi}{2}} \dd \xi \\ = 
-%\frac{A_{0}^2}{\pi} \qty{\frac{k_{0}^2}{\xi^2-k_{0}^2} \cos{\frac{\pi
-%\xi}{2 k_{0}}} \cdot \sum\limits_{n=-\infty}^{\infty} \delta(\xi-nk_{0})
-%\cdot \exp{-i\frac{\pi k}{2 k_{0}} - i \frac{\pi}{2}}
-%} \eval_{\qty(k-k_{0}),\qty(k+k_{0})} 
-%\end{gather}
 
 \begin{gather}
     I(k) = \frac{1}{2\pi} \int\limits_{-\infty}^{\infty}  S(k-\xi)
