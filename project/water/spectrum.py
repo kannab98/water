@@ -63,6 +63,12 @@ class Spectrum:
             self.__alpha/2*k**(-3)*np.exp(-1.25*(self.k_m/k)**2 )*
             self.__gamma**(np.exp(- ( np.sqrt(k/self.k_m)-1)**2 / (2*sigma**2) ))
            )
+
+        # Есть инфа, что k должно быть в степени 3/2
+        # Sw=(
+            # self.__alpha/2*k**(-3)*np.exp(-1.25*(self.k_m/k)**2 )*
+            # self.__gamma**(np.exp(- ( np.sqrt(k/self.k_m)-1)**2 / (2*sigma**2) ))
+           # )
         return Sw
 
     # Безразмерный коэффициент Gamma

@@ -6,14 +6,17 @@ from water.spectrum import Spectrum
 
 class Surface(Spectrum):
     def __init__(self,  N=256, M=100, space='log',
-        random_phases = 1, whitening = None, wind = 0,**kwargs):
+        random_phases = 1, 
+        whitening = None, wind = 0,cwm = None, **kwargs):
         Spectrum.__init__(self,**kwargs)
         self.get_spectrum()
         self.N = N
         self.M = M
         KT = self.KT
         self.wind = wind # Направление ветра
+
         self.k = np.logspace(np.log10(KT[0]), np.log10(KT[-1]),self.N + 1)
+
         if whitening != None:
             if 'h' in whitening:
                 interspace = self.interspace(self.k, N, power=0)
@@ -100,7 +103,6 @@ class Surface(Spectrum):
         self.surface = 0
         self.amplitudes = np.array([ A[i]*sum(F[i])  for i in range(N)])
         progress_bar = tqdm( total = N*M,  leave = False )
-#            progress_bar.set_description("Processing %s" % t)
         for n in range(N):
             for m in range(M):
                 self.surface += A[n] * \
