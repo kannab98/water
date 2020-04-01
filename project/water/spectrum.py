@@ -168,3 +168,4 @@ class Spectrum:
         full_spectrum = interpolate.interp1d(self.k0,
                                              self.full_spectrum(self.k0))
         return full_spectrum
+

@@ -1,8 +1,10 @@
+
 import numpy as np
 from numpy import pi
 from scipy import interpolate,integrate
 from tqdm import tqdm
-from water.spectrum import Spectrum
+# from water.spectrum import Spectrum
+from spectrum import Spectrum
 
 class Surface(Spectrum):
     def __init__(self,  N=256, M=100, space='log',
@@ -14,8 +16,11 @@ class Surface(Spectrum):
         self.M = M
         KT = self.KT
         self.wind = wind # Направление ветра
+        if space=='log':
+            self.k = np.logspace(np.log10(KT[0]), np.log10(KT[-1]),self.N + 1)
+        else:
+            self.k = np.linspace(KT[0], KT[-1],self.N + 1)
 
-        self.k = np.logspace(np.log10(KT[0]), np.log10(KT[-1]),self.N + 1)
 
         if whitening != None:
             if 'h' in whitening:
@@ -46,9 +51,9 @@ class Surface(Spectrum):
 
 
         # массив с амплитудами i-ой гармоники
-        self.A = self.amplitude(self.k)
+        # self.A = self.amplitude1(self.k)
         # угловое распределение
-        self.F = self.angle(self.k,self.phi)
+        # self.F = self.angle1(self.k,self.phi)
 
     def B(self,k):
           def b(k):
@@ -70,11 +75,20 @@ class Surface(Spectrum):
         return Phi
 
 
-    def angle(self,k,phi):
+    def angle(self,k,phi,method='h'):
         M = self.M
+        # N = self.N
         N = self.N
         # print(k.size)
-        Phi = lambda phi,k: self.Phi(k,phi)
+        if method =='h':
+            Phi = lambda phi,k: self.Phi(k,phi)
+        elif method == 'xx':
+            Phi = lambda phi,k: self.Phi(k,phi)*np.cos(phi)**2
+        elif method == 'yy':
+            Phi = lambda phi,k: self.Phi(k,phi)*np.sin(phi)**2
+        else:
+            Phi = lambda phi,k: self.Phi(k,phi)
+
         integral = np.zeros((N,M))
         # print(integral.shape)
         for i in range(N):
@@ -84,24 +98,55 @@ class Surface(Spectrum):
         amplitude = np.sqrt(2 *integral )
         return amplitude
 
-    def amplitude(self, k):
+    def amplitude(self, k,method='h'):
         N = len(k)
-        S = self.spectrum
-        integral = np.array([ integrate.quad(S,k[i-1],k[i])[0] for i in range(1,N) ])
+        if method == 'h':
+            S = self.spectrum
+        else:
+            S = lambda k: self.spectrum(k) * k**2
+
+        integral = np.zeros(k.size-1)
+        # progress_bar = tqdm( total = N-1)
+        for i in range(1,N):
+            integral[i-1] = integrate.quad(S,k[i-1],k[i])[0] 
+        #     progress_bar.update(1)
+        # progress_bar.clear()
+        # progress_bar.close()
+        # integral = np.array([ integrate.quad(S,k[i-1],k[i])[0] for i in range(1,N) ])
         amplitude = np.sqrt(2 *integral )
         return np.array(amplitude)
 
-    def model(self,r,t):
+
+    
+    def calc_amplitude(self,k,phi):
+        N = k.size
+        M = phi.size 
+        # print(N,M)
+        integral = np.zeros((N-1,M-1))
+        progress_bar = tqdm(total=(N-1)*M)
+        spectrum_k = lambda k: self.spectrum(k)
+        spectrum_phi = lambda k,phi: self.Phi(k,phi)
+        func = lambda k,phi: spectrum_k(k)*spectrum_phi(k,phi)
+        for i in range(1,N):
+            for j in range(1,M):
+                integral[i-1][j-1] = integrate.dblquad(func,phi[j-1],phi[j],lambda x: k[i-1],lambda x: k[i] )[0]
+            progress_bar.update(1)
+        progress_bar.clear()
+        progress_bar.close()
+        return np.sqrt(2*integral)
+
+
+    def model(self,r,t,method='h'):
         N = self.N
         M = self.M
-        self.k = self.k[:N]
+        # self.k = self.k[:N]
         k = self.k
         phi = self.phi
-        A = self.A
-        F = self.F
+        A = self.amplitude(k,method=method)
+        F = self.angle(k,phi,method=method)
         psi = self.psi
         self.surface = 0
-        self.amplitudes = np.array([ A[i]*sum(F[i])  for i in range(N)])
+        # self.amplitudes = np.array([ A[i]*sum(F[i])  for i in range(N)])
         progress_bar = tqdm( total = N*M,  leave = False )
         for n in range(N):
             for m in range(M):
@@ -116,6 +161,36 @@ class Surface(Spectrum):
         progress_bar.clear()
         print()
         return self.surface
+
+    # def slopesxx(self,r,t):
+    #     N = self.N
+    #     M = self.M
+    #     spectrum = self.spectrum(self.k) * (k*cos(phi))**2
+    #     angles_distrib = self.Phi(self.k,phi)
+
+
+    #     self.k = self.k[:N]
+    #     k = self.k
+    #     phi = self.phi
+    #     A = self.A
+    #     F = self.F
+    #     psi = self.psi
+    #     self.surface = 0
+    #     self.amplitudes = np.array([ A[i]*sum(F[i])  for i in range(N)])
+    #     progress_bar = tqdm( total = N*M,  leave = False )
+    #     for n in range(N):
+    #         for m in range(M):
+    #             self.surface += A[n] * \
+    #             np.cos(
+    #                 +k[n]*(r[0]*np.cos(phi[m])+r[1]*np.sin(phi[m]))
+    #                 +psi[n][m]
+    #                 +self.omega_k(k[n])*t) \
+    #                 * F[n][m]
+    #             progress_bar.update(1)
+    #     progress_bar.close()
+    #     progress_bar.clear()
+    #     print()
+    #     return self.surface
 
     def D(self,r,t):
         N = self.N
@@ -205,3 +280,63 @@ class Surface(Spectrum):
             nodes[-1]=self.KT[-1]
 
         return nodes
+    
+    def model1(self,r,t):
+        N = self.N
+        M = self.M
+        print(N,M)
+        self.k = self.k[:N]
+        k = self.k
+        phi = self.phi
+        A = self.calc_amplitude(k,phi)
+        psi = self.psi
+        self.surface = 0
+        progress_bar = tqdm( total = N*M,  leave = False )
+        for n in range(N-1):
+            for m in range(M-1):
+                self.surface += A[n][m] * \
+                np.cos(
+                    +k[n]*(r[0]*np.cos(phi[m])+r[1]*np.sin(phi[m]))
+                    +psi[n][m]
+                    +self.omega_k(k[n])*t) 
+                progress_bar.update(1)
+        progress_bar.close()
+        progress_bar.clear()
+        print()
+        return self.surface
+
+import matplotlib.pyplot as plt
+
+surface = Surface(N=2048,M=1,U10=10)
+x0 = np.linspace(0,100,10000)
+y0 = x0
+t=0
+# x, y = np.meshgrid(x0, y0)
+from matplotlib.cm import winter
+# fig,ax = plt.subplots(nrows = 1, ncols = 3)
+methods=['h','xx']
+# titles=['высоты', 'наклоны xx', 'наклоны yy']
+# for i in range(len(methods)):
+fig, ax1 = plt.subplots()
+z = surface.model([x0,0],t,method='h')
+# slopes=np.diff(z[0])
+slopes = surface.model([x0,0],t,method='x')
+
+ax2 = ax1.twinx()
+
+# slopes = np.diff(z)/np.diff(x0)
+# ax2.plot(x0[1:],np.rad2deg(np.arctan(slopes)))
+# slopes = surface.model([x0,0],t,method='x')
+ax2.plot(x0,np.rad2deg(np.arctan(slopes)))
+
+ax2.set_ylabel('Наклоны, градусы')
+ax1.plot(x0,z,'r')
+ax1.set_ylabel('Высоты, м')
+fig.tight_layout()
+# plt.savefig(titles[i]+'.png',dpi=600)
+plt.show()
+# print("\n")
+# A = surface.calc_amplitude(surface.k,surface.phi)
+# print(A.shape)
+# A0 = surface.amplitude(surface.k)*surface.angle(surface.k,surface.phi)
+# print(A0.shape)

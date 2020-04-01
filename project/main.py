@@ -1,14 +1,9 @@
 import numpy as np
 from numpy import pi
 
-from matplotlib import rc
 from matplotlib.cm import winter
 import matplotlib.pyplot as plt
 
-plt.rcParams['axes.labelsize'] = 20
-rc('text',usetex=True)
-rc('text.latex',preamble=[r'\usepackage[russian]{babel}',r'\usepackage{amsmath}'])
-rc('font',family = 'serif')
 
 # Вот тут должны быть нужные тебе массивы. (Если они одномерные)
 x0 = np.linspace(0,200,200)

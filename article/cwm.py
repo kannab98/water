@@ -42,7 +42,7 @@ ax.set_xlabel('k/k0')
 ax.set_ylabel('z(x), м')
 print(np.trapz(y,x = x))
 print(np.trapz(y,x = x - D))
-plt.savefig('cwm_surface.pdf')
+# plt.savefig('cwm_surface.pdf')
 fig, ax = plt.subplots(nrows = 1, ncols = 1)
 # Spectrum
 freq = np.fft.rfftfreq(n = N, d = end/step)
@@ -54,9 +54,9 @@ S = fft.rfft(y*(1-parD))
 S[0]*=0.5
 ax.stem(freq,2*np.abs(S)/x.size,markerfmt = '.',label='Численно', )
 
-# freq = [0,1,2]
-# S = [a**2/2, a, a**2/2] 
-# ax.stem(freq,S,label='Аналитически',markerfmt ='or')
+freq = [0,1,2]
+S = [a**2/2, a, a**2/2] 
+ax.stem(freq,S,label='Аналитически',markerfmt ='or')
 ax.legend()
 ax.set_xlabel('k/k0')
 ax.set_ylabel('z(x)/pi, м')
