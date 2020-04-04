@@ -23,7 +23,7 @@ def U10(sigma0):
     if sigma0 < 10.12:
         A =  0.080074
         B = -0.12465
-    elif sigma0 < 10.9:
+    elif sigma0 < 19.9:
         A = 0.03989
         B = -0.03199
     else:
@@ -146,23 +146,32 @@ class Radiolocator():
 
 alpha = 2097955
 sigma = 6.7874e-9
-brown = lambda t,A,alpha,sigma:  A*np.exp(-alpha*(t - alpha/2 * sigma**2))*(1 + erf( (t - alpha*sigma**2)/(2**0.5*sigma)))
+brown = lambda t,A,alpha,sigma,T:  A*np.exp(-alpha*(t - alpha/2 * sigma**2))*(1 + erf( (t - alpha*sigma**2)/(2**0.5*sigma))) + T
+ice = lambda t,A,tau,sigma,S:  A*np.exp(S*(t - tau))*(1 + erf( (t - tau)/(sigma)))
 t = np.linspace(-5e-8, 2e-7, 256)
 v = np.linspace(-0.1,0.5,1000)
 radiolocator = Radiolocator()
 plt.figure(1)
-pulse = radiolocator.pulse(t,dim=1) + np.random.uniform(0,0.25,size=t.size)
+pulse = radiolocator.pulse(t,dim=1) + np.random.uniform(-0.3,0.3,size=t.size)
 
-p, pcov = curve_fit(brown, xdata=t,ydata=pulse,p0=[0,alpha,0])
-print(p)
+
+p, pcov = curve_fit(brown, xdata=t,ydata=pulse,p0=[0,alpha*0.01,0,0])
+# p1, pcov = curve_fit(ice, xdata=t,ydata=pulse,p0=[1,(alpha*sigma)**2,0,alpha])
+# print(p1)
 # print(popt)
 
-plt.plot(t,brown(t,p[0],p[1],p[2]))
+
+
 # plt.plot(t,brown(t,p[0],p[1],p[2]))
-plt.plot(t,pulse)
-
-
-# plt.plot(t,brown(t,sigma))
+plt.plot(t,pulse,label='теория + белый шум')
+t = np.linspace(-5e-8, 2e-7, 512)
+pulse0 = brown(t,p[0],p[1],p[2],p[3])
+sigma0 = max(pulse0) - min(pulse0)
+print(sigma0)
+plt.plot(t,pulse0,label='аппроксимация')
+# plt.plot(t,ice(t,p1[0],p1[1],p1[2],p1[3]))
+plt.plot(t,brown(t,1,alpha,sigma,0),label='теория')
+plt.legend()
 plt.show()
 
 
