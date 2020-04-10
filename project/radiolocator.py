@@ -7,8 +7,11 @@ from scipy.optimize import curve_fit
 from scipy.special import erf
 from scipy.optimize import anderson
 from scipy.optimize import root
-
 from pandas import read_csv
+import pandas as pd
+# import pandas.DataFrame
+
+
 xrad = yrad = 0
 
 def U10(sigma0):
@@ -25,7 +28,7 @@ def U10(sigma0):
     return (np.exp(10**-(0.21 + 0.1*sigma0)) - B)/A
 
 class Radiolocator():
-    def __init__(self, h=1e6, xi=0.0, theta=1.5, c=3e8, sigma=1, 
+    def __init__(self, h=1e6, xi=0.0, theta=1.5, c=299792458, sigma=1, 
                     angles_in='degrees', pulse = np.array([None]), t = None):
         self.R = 6370e3 # Радиус Земли в метрах
         self.c = c # Скорость света в м/с
@@ -49,7 +52,7 @@ class Radiolocator():
     def H(self,h):
         return h*( 1+ h/self.R )
     
-    def A(self,gamma,xi,A0=1):
+    def A(self,gamma,xi,A0=1.):
         return A0*np.exp(-4/gamma * np.sin(xi)**2 )
 
     def u(self,t,alpha,sigma_c):
@@ -102,8 +105,12 @@ class Radiolocator():
             pulse -= A/2*np.exp(-v)*( 1 + erf(u) )
 
         return pulse
-    def pulse_min(self):
-        gamma = self.Gamma
+
+    def pulse_v(self, v, dim = 1):
+
+        self.dim = dim
+        gamma = self.gamma(self.theta)
+
         delta = self.delta(gamma,self.xi,self.h)
         beta  = self.beta(gamma,self.xi,self.h)
 
@@ -111,9 +118,12 @@ class Radiolocator():
 
         sigma_c = self.sigma_c(self.sigma_s)
 
-        return np.sqrt(2*sigma_c**2 * np.log(1/(np.sqrt(2*np.pi*sigma_c**2 *alpha**2))))  + alpha*sigma_c**2
-        
+        u = np.sqrt(2)*v/(alpha*sigma_c) - alpha*sigma_c/np.sqrt(2)
 
+        A = self.A(gamma,self.xi)
+        pulse = A*np.exp(-v)*( 1 + erf(u) )
+
+        return pulse
 
     def calc(self,t,pulse):
         self.brown = lambda t,A,alpha,sigma:  A*np.exp(-alpha*(t - alpha/2 * sigma**2))*(1 + erf( (t - alpha*sigma**2)/(2**0.5*sigma))) 
@@ -121,13 +131,12 @@ class Radiolocator():
         theta = np.deg2rad(1.5)
         gamma = 2*np.sin(theta/2)**2/np.log(2)
 
-        popt,pcov = curve_fit(self.brown, 
+        popt = curve_fit(self.brown, 
                             xdata=t,
                             ydata=pulse,
                             p0=[1,2e6,0],
                             bounds=( (0,1e5,0), (2,4e6,np.inf) )
-                        ) 
-        print(popt)
+                        ) [0]
         c = self.c
         R = self.R
 
@@ -142,40 +151,141 @@ class Radiolocator():
         h  = -R/2 + np.sqrt(R**2 +4*h0*R)/2
 
         sigma_s = (popt[2]**2 - (self.T*0.425) **2)*c**2/4
-        return np.rad2deg(xi), h, sigma_s, P,pcov
+        P = max(pulse) - min(pulse)
+        return np.rad2deg(xi), h, sigma_s, 10*np.log10(P)
 
 
-df = read_csv('imp_5.dat',sep='\s+',header=None).T
 
-t = df.iloc[0].values*1e-9
-pulse = df.iloc[1].values
-pulse=2*pulse/max(pulse)
-tmax = t[np.argmax(pulse)]
-
-plt.plot(t- tmax,pulse,label='практика')
-
-
-radiolocator = Radiolocator(xi = 0, sigma=0.0)
-# t = np.linspace(-5e-8, 2e-7, 25600) 
-
-# pulse = radiolocator.pulse(t)     
-
-# tmax1 = radiolocator.pulse_min()
-# A = max(pulse) - min(pulse)
-# err = 0.01
-
-# plt.plot(t - tmax1,pulse,label='теория')
-# pulse +=  np.random.uniform(-err*A,err*A,size=t.size)
-# plt.plot(t,pulse,':',label='теория + шум')
-
-params = radiolocator.calc(t=t,pulse=pulse)
+radiolocator = Radiolocator(xi = 0, sigma = 1)
+t = np.linspace(-2e-7, 2e-7, 256)
+pulse = radiolocator.pulse(t)     
+data = pd.DataFrame({"col1":t,"col2":pulse})
+data.to_csv(r'test.csv',index=False,header=None)
+plt.plot(t,pulse)
 
 
-# radiolocator = Radiolocator(xi = params[0], h = params[1], sigma = params[2])
-# pulse = radiolocator.pulse(t)     
-# plt.plot(t,pulse,label='аппроксимация')
+# df = read_csv('imp04_10.dat', sep ='\s+', header = None).T
+# t0 = df.iloc[0].values*1e-9
+# pulse0 = df.iloc[1].values
+# pulse0 = 2*pulse0/max(pulse0)
+# # pulse = pulse0
+# # t = t0
+
+
+
+# T  =  t[np.argmax(pulse)]
+# # T0 = t0[np.argmax(pulse0)]
+# # print(T,T0)
+
+# # plt.plot(t,pulse,label='теория')
+# # t00 = t0 -T0 + T
+
+
+# # params = radiolocator.calc(t=t00,pulse=pulse0)
+
+
+# # radiolocator = Radiolocator(xi = params[0], h = params[1], sigma = params[2])
+# # pulse = radiolocator.pulse(t)     
+
+
+
+
+
+
+
+
+# # plt.plot(t,pulse,label='аппроксимация')
+# # plt.plot(t,pulse,label='аппроксимация')
+# # plt.plot(t0 - T0 + T , pulse0, label='практика')
+# # plt.plot(t0 - T0 + T , pulse0, label='практика')
+
+# # print('xi = {},\nh = {},\nsigma_s = {}'.format(params[0],params[1],params[2]))
+# # plt.legend()
+
+# ############3 Ищу коэффициент наклона заднегот фронта
+# Nmax = np.argmax(pulse)
+# Pulse = np.log(pulse[Nmax:])
+# T = t[Nmax:]
+# line = lambda t,alpha,b: -alpha*t + b   
+
+# popt = curve_fit(line, 
+#                     xdata=T,
+#                     ydata=Pulse,
+#                     p0=[2e6,0],
+#                 )[0]
+
+
+# print(popt)
+
+# theta = np.deg2rad(1.5)
+# gamma = 2*np.sin(theta/2)**2/np.log(2)
+# plt.figure(1)
+# plt.plot(T,Pulse)
+# plt.plot(T, line(T,popt[0],popt[1]))
+# print('наклон заднего фронта= ', popt[0])
+# alpha = popt[0]
+# #### Оценка амплитуды
+# A = ( line(T[0],popt[0],popt[1]) - line(T[-1],popt[0],popt[1]) )/2 * np.exp(+popt[0] *(T[-1]-T[0]))
+# print('оценка амплитуды=', A)
+# ###### Оценка xi
+# # квадратное уравнение
+# h = radiolocator.H(radiolocator.h)
+# # h = 1e6
+# a = 1
+# b = - gamma
+# c = alpha * radiolocator.Gamma**2 * h/4/radiolocator.c - 1
+# xi =  (-b + np.sqrt(b**2 - 4*a*c))/2
+# xi = np.abs(xi)
+# print(xi)
+# print('оценка xi=', np.rad2deg(np.arccos(xi)/2))
+# plt.figure(2)
+# ############# Время искать ширину переднего фронта.
+
+# args = (np.argwhere(pulse < 0.01*np.max(pulse)))
+# args = np.max(args)
+# norm = []
+# left_edge = args
+# for i in range(2,args):
+#     line = lambda t,T: T   
+#     popt = curve_fit(line, 
+#                         xdata=t[0:i],
+#                         ydata=pulse[0:i],
+#                         p0=[0],
+#                     )[0]
+#     # if abs(pulse[i] - line(t[i],popt[0],popt[1])) < 0.05:
+#     #     count = i
+#     if np.linalg.norm(pulse[0:i] - line(t[0:i],popt[0])) > 0.01:
+#         left_edge = i
+#         break
+#     # print(popt[0]*1e-9)
+
+# # count = np.argmin(norm)
+# count = left_edge
+
+# print(count)
+# sigmal = t[Nmax] - t[left_edge]
+# print('ширина переднего фронта= ', sigmal)
+# print('оценка амплитуды', (max(pulse) - min(pulse))/2 ) 
+# print('эпоха=', alpha/2*sigmal**2)
+
+# rad = radiolocator
+# h =  
+# alpha_new =  4/gamma * rad.c/h * (cos )
+# brown = lambda t,,alpha,sigma:  A*np.exp(-alpha*(t - alpha/2 * sigma**2))*(1 + erf( (t - alpha*sigma**2)/(2**0.5*sigma))) 
+
+
+# theta = np.deg2rad(1.5)
+# gamma = 2*np.sin(theta/2)**2/np.log(2)
+
+# popt = curve_fit(brown, 
+#                     xdata=t,
+#                     ydata=pulse,
+#                     p0=[1,2e6,0],
+#                     bounds=( (0,1e5,0), (2,4e6,np.inf) )
+#                 ) [0]
+
+# plt.plot(t[0:count+1],pulse[0:count+1],label='нули')
+# plt.plot(t[count:Nmax+1],pulse[count:Nmax+1],label='передний фронт')
+# plt.plot(t[Nmax:],pulse[Nmax:],label='задний фронт')
 # plt.legend()
-# # plt.title( 'xi = {:.2},\nh = {:.1},\nsigma_s = {:.3}, sigma0 = {:.2}'.format(params[0],params[1],params[2],params[3]))
-plt.show()
-# # print(U10(params[3]))
-
+# plt.show()
